@@ -28,20 +28,20 @@
     <section class="hero tcg-hero relative z-10" id="home" style="overflow: hidden;">
         
         <!-- Giant Team Rocket background 'R' SVG (GSAP animation target) -->
-        <svg id="rocket-r-bg" class="absolute z-0 pointer-events-none" style="top: 50%; right: -5%; transform: translateY(-50%); width: 60vw; height: auto; max-width: 800px; opacity: 0; filter: drop-shadow(0 0 20px #ff0033);" viewBox="0 0 200 250">
+        <svg id="rocket-r-bg" class="absolute z-0 pointer-events-none" style="top: 50%; right: -5%; transform: translateY(-50%); width: 60vw; height: auto; max-width: 800px; filter: drop-shadow(0 0 20px rgba(150, 150, 150, 0.5));" viewBox="0 0 200 250">
             <!-- R letterform path -->
-            <path class="draw-r-path" d="M 40 20 L 140 20 C 180 20 180 100 140 100 L 40 100 M 40 20 L 40 230 M 100 100 L 160 230" fill="transparent" stroke="#ff0033" stroke-width="25" stroke-linecap="square" stroke-linejoin="miter"></path>
+            <path class="draw-r-path" d="M 40 20 L 140 20 C 180 20 180 100 140 100 L 40 100 M 40 20 L 40 230 M 100 100 L 160 230" fill="transparent" stroke="#e2e8f0" stroke-width="25" stroke-linecap="square" stroke-linejoin="miter"></path>
         </svg>
 
         <div class="hero-overlay-cyber" style="background: radial-gradient(circle at center, transparent 0%, rgba(5,0,2,0.8) 100%);"></div>
         
         <div class="hero-content relative z-10">
-            <div class="cyber-badge reveal" style="border-color: #ff0033; color: #ff0033; background: rgba(255,0,51,0.1); text-shadow: 0 0 10px rgba(255,0,51,0.5);">なんだかんだと課題があれば、解決するのが世の情け。</div>
-            <h1 class="hero-title cyber-glitch reveal" data-text="トレカ業界の利益を、支配する。" style="text-shadow: 2px 2px 0px rgba(255,0,51,0.8), -2px -2px 0px rgba(0,240,255,0.8);">トレカ業界の利益を、<br>支配する。</h1>
-            <p class="hero-subtitle reveal" style="font-weight: bold; text-shadow: 0 0 10px #000;">秋葉原Rocketsはデータとテクノロジーを駆使し、<br>トレカ事業の「在庫回転率」と「利益率」を最大化します。</p>
+            <div class="cyber-badge reveal" style="border-color: #cbd5e1; color: #cbd5e1; background: rgba(203, 213, 225, 0.1); text-shadow: 0 0 10px rgba(203, 213, 225, 0.5);">なんだかんだと課題があれば、解決するのが世の情け。</div>
+            <h1 class="hero-title cyber-glitch reveal" data-text="トレカ業界の利益を、支配する。" style="text-shadow: 2px 2px 0px rgba(255,0,51,0.5), -2px -2px 0px rgba(100,100,100,0.8);">トレカ業界の利益を、<br>支配する。</h1>
+            <p class="hero-subtitle reveal" style="font-weight: bold; text-shadow: 0 0 10px #000; color: #f1f5f9;">秋葉原Rocketsはデータとテクノロジーを駆使し、<br>トレカ事業の「在庫回転率」と「利益率」を最大化します。</p>
             <div class="hero-buttons reveal">
-                <a href="<?php echo home_url('/contact/'); ?>" class="btn btn-primary cyber-btn hover-glow" style="background: linear-gradient(90deg, #b91c1c, #ff0033); border: none; box-shadow: 0 0 15px rgba(255,0,51,0.5);"><i class="fas fa-comment-dots"></i> 無料相談</a>
-                <a href="<?php echo home_url('/document/'); ?>" class="btn btn-secondary cyber-btn outline-glow" style="border-color: #ff0033; color: #ff0033;"><i class="fas fa-file-download"></i> サービス資料DL</a>
+                <a href="<?php echo home_url('/contact/'); ?>" class="btn btn-primary cyber-btn hover-glow" style="background: linear-gradient(90deg, #475569, #1e293b); border: 1px solid #94a3b8; box-shadow: 0 0 15px rgba(255,255,255,0.2);"><i class="fas fa-comment-dots"></i> 無料相談</a>
+                <a href="<?php echo home_url('/document/'); ?>" class="btn btn-secondary cyber-btn outline-glow" style="border-color: #cbd5e1; color: #cbd5e1;"><i class="fas fa-file-download"></i> サービス資料DL</a>
             </div>
         </div>
         

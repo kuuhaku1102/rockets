@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Appear the SVG box first
         gsap.to(rBg, { opacity: 0.15, duration: 1, ease: "power2.out" });
 
-        // Draw the red stroke
+        // Draw the silver stroke
         gsap.to(rPath, {
             strokeDashoffset: 0,
             duration: 2.5,
@@ -150,8 +150,8 @@ document.addEventListener("DOMContentLoaded", () => {
             onComplete: () => {
                 // Heartbeat / evil pulse effect
                 gsap.to(rBg, {
-                    filter: "drop-shadow(0 0 50px #ff0033)",
-                    opacity: 0.25,
+                    filter: "drop-shadow(0 0 40px rgba(255,255,255,0.8))",
+                    opacity: 0.35,
                     duration: 1.5,
                     repeat: -1,
                     yoyo: true,
