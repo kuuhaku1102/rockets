@@ -16,7 +16,8 @@ body {
 
 .home-tcg-theme {
     background-color: transparent;
-    /* so webgl canvas shows */
+    overflow: hidden;
+    /* Prevent absolute SVGs from inflating doc scrollHeight */
 }
 
 /* WebGL Background */
