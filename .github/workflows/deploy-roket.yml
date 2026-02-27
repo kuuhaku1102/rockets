@@ -48,7 +48,7 @@ jobs:
           ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
           "echo 'SSH OK'"
 
-      - name: Deploy Blank Theme
+      - name: Deploy Rokets Theme
         uses: wlixcc/SFTP-Deploy-Action@v1.2.6
         with:
           server: ${{ secrets.SSH_HOST }}
@@ -56,10 +56,9 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-          # blankテーマの中身をアップする前提
           local_path: ./
 
-          remote_path: "public_html/blank-design.online/wp-content/themes/blank/"
+          remote_path: "public_html/akihabara-rokets.online/wp-content/themes/rokets/"
 
           sftp_only: false
           delete_remote_files: false
