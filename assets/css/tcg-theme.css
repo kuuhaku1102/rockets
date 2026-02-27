@@ -1,7 +1,8 @@
-/* TCG Theme Styling - Dark Mode Cyber Aesthetic */
+/* TCG Theme Styling - Dark Mode Cyber Aesthetic, 3D WebGL integrated */
 :root {
     --tcg-bg: #030712;
-    --tcg-surface: #0f172a;
+    --tcg-surface: rgba(15, 23, 42, 0.6);
+    /* make surface semi transparent for WebGL to show through */
     --tcg-glow: #00f0ff;
     --tcg-glow-alt: #f000ff;
     --tcg-text: #f8fafc;
@@ -14,10 +15,68 @@ body {
 }
 
 .home-tcg-theme {
-    background-color: var(--tcg-bg);
+    background-color: transparent;
+    /* so webgl canvas shows */
 }
 
-/* Hero Section */
+/* WebGL Background */
+.webgl-bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Utilities */
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.z-10 {
+    z-index: 10;
+}
+
+.z-0 {
+    z-index: 0;
+}
+
+.top-0 {
+    top: 0;
+}
+
+.left-0 {
+    left: 0;
+}
+
+.right-0 {
+    right: 0;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.pointer-events-none {
+    pointer-events: none;
+}
+
+.top-\[-50px\] {
+    top: -50px;
+}
+
+.left-\[50\%\] {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Make main sections transparent so WebGL shines */
 .tcg-hero {
     position: relative;
     height: 100vh;
@@ -25,36 +84,24 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    background: transparent !important;
 }
 
-.hero-bg .hero-image-bg {
+.hero-overlay-cyber {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    opacity: 0.6;
-    animation: scaleIn 20s linear infinite alternate;
-}
-
-@keyframes scaleIn {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.1); }
-}
-
-.hero-overlay-cyber {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(135deg, rgba(3,7,18,0.95) 0%, rgba(15,23,42,0.85) 100%);
-    box-shadow: inset 0 0 100px rgba(0,240,255,0.1);
+    /* Slight gradient to read text clearly, but mainly transparent to see webgl */
+    background: radial-gradient(circle at center, rgba(3, 7, 18, 0.2) 0%, rgba(3, 7, 18, 0.8) 100%);
+    box-shadow: inset 0 0 100px rgba(0, 240, 255, 0.1);
 }
 
 .cyber-badge {
     display: inline-block;
     padding: 8px 16px;
-    background: rgba(0,240,255,0.1);
+    background: rgba(0, 240, 255, 0.1);
     border: 1px solid var(--tcg-glow);
     border-radius: 20px;
     color: var(--tcg-glow);
@@ -63,7 +110,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 20px;
-    box-shadow: 0 0 10px rgba(0,240,255,0.2);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
 }
 
 .cyber-glitch {
@@ -71,13 +118,13 @@ body {
     font-weight: 800;
     line-height: 1.2;
     color: #fff;
-    text-shadow: 0 0 20px rgba(0,240,255,0.5);
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
     margin-bottom: 30px;
 }
 
 .hero-subtitle {
     font-size: 1.2rem;
-    color: rgba(255,255,255,0.8);
+    color: rgba(255, 255, 255, 0.8);
     margin-bottom: 40px;
 }
 
@@ -92,13 +139,13 @@ body {
 
 .hover-glow {
     background: linear-gradient(90deg, #00f0ff, #0077ff);
-    box-shadow: 0 0 20px rgba(0,240,255,0.5);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
     border: none;
     color: #000;
 }
 
 .hover-glow:hover {
-    box-shadow: 0 0 35px rgba(0,240,255,0.8);
+    box-shadow: 0 0 35px rgba(0, 240, 255, 0.8);
     color: #000;
     transform: translateY(-2px);
 }
@@ -110,8 +157,8 @@ body {
 }
 
 .outline-glow:hover {
-    background: rgba(0,240,255,0.1);
-    box-shadow: inset 0 0 15px rgba(0,240,255,0.3);
+    background: rgba(0, 240, 255, 0.1);
+    box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.3);
 }
 
 .hero-buttons {
@@ -147,13 +194,14 @@ body {
     transform: rotateY(180deg) scale(1.05);
 }
 
-.card-front, .card-back {
+.card-front,
+.card-back {
     position: absolute;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
     border-radius: 12px;
-    border: 2px solid rgba(0,240,255,0.2);
+    border: 2px solid rgba(0, 240, 255, 0.2);
 }
 
 .card-front {
@@ -164,20 +212,20 @@ body {
     justify-content: center;
     background-size: cover;
     background-position: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .card-icon {
     font-size: 3rem;
     color: var(--tcg-glow);
     margin-bottom: 20px;
-    filter: drop-shadow(0 0 10px rgba(0,240,255,0.8));
+    filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.8));
 }
 
 .card-front h3 {
     color: #fff;
     font-size: 1.5rem;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
     z-index: 2;
 }
 
@@ -185,7 +233,7 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 50% 50%, rgba(0,240,255,0.2) 0%, transparent 60%);
+    background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.2) 0%, transparent 60%);
     opacity: 0;
     transition: opacity 0.3s;
 }
@@ -219,8 +267,15 @@ body {
 }
 
 /* Sections Global */
-.section-padding { padding: 120px 0; }
-.section-title h2 { color: #fff; font-size: 3rem; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+.section-padding {
+    padding: 120px 0;
+}
+
+.section-title h2 {
+    color: #fff;
+    font-size: 3rem;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
 
 /* About Rockets */
 .about-rockets-grid {
@@ -237,14 +292,16 @@ body {
 }
 
 .check-list li {
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
     padding: 15px 20px;
     border-radius: 8px;
     margin-bottom: 10px;
     border-left: 3px solid var(--tcg-glow);
 }
 
-.neon-text { color: var(--tcg-glow); }
+.neon-text {
+    color: var(--tcg-glow);
+}
 
 .cyber-frame-img {
     width: 100%;
@@ -257,14 +314,14 @@ body {
     position: absolute;
     bottom: -20px;
     right: -20px;
-    background: rgba(15,23,42,0.9);
+    background: rgba(15, 23, 42, 0.9);
     border: 1px solid var(--tcg-glow);
     padding: 20px;
     border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 0 20px rgba(0,240,255,0.4);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
     animation: floatParticle 4s ease-in-out infinite alternate;
 }
 
@@ -273,6 +330,7 @@ body {
     color: var(--tcg-glow);
     margin-bottom: 10px;
 }
+
 .floating-hologram span {
     font-weight: bold;
     font-size: 1.2rem;
@@ -286,8 +344,8 @@ body {
 }
 
 .cyber-panel {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(0,240,255,0.1);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(0, 240, 255, 0.1);
     border-radius: 12px;
     padding: 30px;
     backdrop-filter: blur(10px);
@@ -295,13 +353,13 @@ body {
 }
 
 .cyber-panel:hover {
-    border-color: rgba(0,240,255,0.5);
-    box-shadow: 0 10px 30px rgba(0,240,255,0.1);
+    border-color: rgba(0, 240, 255, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);
     transform: translateY(-5px);
 }
 
 .neon-badge {
-    background: rgba(0,240,255,0.1);
+    background: rgba(0, 240, 255, 0.1);
     color: var(--tcg-glow);
     border: 1px solid var(--tcg-glow);
     padding: 4px 12px;
@@ -311,13 +369,38 @@ body {
     margin-bottom: 15px;
 }
 
-.case-body { margin-top: 20px; }
-.data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; }
-.label { color: #94a3b8; }
-.val.bad { color: #f87171; }
-.val.good { color: #4ade80; font-size: 1.2rem; text-shadow: 0 0 5px rgba(74, 222, 128, 0.4); }
+.case-body {
+    margin-top: 20px;
+}
 
-.case-desc { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; margin-top: 15px; font-size: 0.9rem; color: #cbd5e1; }
+.data-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.label {
+    color: #94a3b8;
+}
+
+.val.bad {
+    color: #f87171;
+}
+
+.val.good {
+    color: #4ade80;
+    font-size: 1.2rem;
+    text-shadow: 0 0 5px rgba(74, 222, 128, 0.4);
+}
+
+.case-desc {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 15px;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+}
 
 /* Flow Steps */
 .flow-steps {
@@ -335,10 +418,11 @@ body {
 
 .step-num {
     position: absolute;
-    top: -15px; right: -15px;
+    top: -15px;
+    right: -15px;
     font-size: 3rem;
     font-weight: 800;
-    color: rgba(255,255,255,0.05);
+    color: rgba(255, 255, 255, 0.05);
 }
 
 .step-icon {
@@ -351,30 +435,59 @@ body {
     display: flex;
     align-items: center;
     height: 150px;
-    color: rgba(0,240,255,0.3);
+    color: rgba(0, 240, 255, 0.3);
     font-size: 1.5rem;
 }
 
 /* Bottom CTA */
 .bottom-cta {
     text-align: center;
-    border-top: 1px solid rgba(0,240,255,0.2);
+    border-top: 1px solid rgba(0, 240, 255, 0.2);
 }
 
 .cta-bg-image {
-    position: absolute; top:0; left:0; width:100%; height:100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
+
 .cta-bg-image img {
-    width: 100%; height: 100%; object-fit: cover; opacity: 0.2; filter: grayscale(100%); mix-blend-mode: luminosity;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.2;
+    filter: grayscale(100%);
+    mix-blend-mode: luminosity;
 }
+
 .cta-overlay.glass {
-    position: absolute; top:0; left:0; width:100%; height:100%;
-    background: linear-gradient(to top, rgba(3,7,18,1), rgba(3,7,18,0.7));
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(3, 7, 18, 1), rgba(3, 7, 18, 0.7));
 }
 
 @media (max-width: 900px) {
-    .about-rockets-grid, .flow-steps { flex-direction: column; grid-template-columns: 1fr; }
-    .hero-buttons { flex-direction: column; }
-    .step-connector { display: none; }
-    .cyber-glitch { font-size: 2.5rem; }
+
+    .about-rockets-grid,
+    .flow-steps {
+        flex-direction: column;
+        grid-template-columns: 1fr;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .step-connector {
+        display: none;
+    }
+
+    .cyber-glitch {
+        font-size: 2.5rem;
+    }
 }

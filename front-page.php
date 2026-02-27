@@ -1,12 +1,17 @@
 <?php get_header(); ?>
 
-<main id="content" class="home-tcg-theme">
+<main id="content" class="home-tcg-theme relative z-10">
+
+    <!-- WebGL Canvas Background -->
+    <canvas id="bg-canvas" class="webgl-bg-canvas"></canvas>
+
+    <!-- Animated SVG Grid Line Overlay -->
+    <svg class="svg-line absolute top-0 left-0 w-full h-[1000px] pointer-events-none z-0" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="M50,0 Q60,30 50,70 T40,100" fill="transparent" stroke="rgba(0,240,255,0.4)" stroke-width="0.2" vector-effect="non-scaling-stroke"></path>
+    </svg>
 
     <!-- Hero Section -->
-    <section class="hero tcg-hero" id="home">
-        <div class="hero-bg">
-            <img src="<?php echo get_template_directory_uri(); ?>/assets/images/hero_tcg.png" alt="TCG Cyber Arena" class="hero-image-bg">
-        </div>
+    <section class="hero tcg-hero relative z-10" id="home">
         <div class="hero-overlay-cyber"></div>
         <div class="hero-content">
             <div class="cyber-badge reveal">TCG Shop Specialist Group</div>
@@ -25,7 +30,11 @@
     </section>
 
     <!-- Rocketsとは？ -->
-    <section class="section-padding about-rockets-section">
+    <section class="section-padding about-rockets-section relative z-10">
+        <!-- Connecting Line animation -->
+        <svg class="svg-line absolute top-[-50px] left-[50%] w-[10px] h-[150px] pointer-events-none z-0" viewBox="0 0 10 100" preserveAspectRatio="none">
+            <path d="M5,0 L5,100" fill="transparent" stroke="rgba(240,0,255,0.6)" stroke-width="2" stroke-dasharray="5 5" vector-effect="non-scaling-stroke"></path>
+        </svg>
         <div class="container">
             <div class="section-title reveal">
                 <h2>Why Rockets?</h2>
@@ -145,7 +154,11 @@
     </section>
 
     <!-- 導入事例 -->
-    <section class="section-padding cases-section">
+    <section class="section-padding cases-section relative z-10">
+        <!-- SVG Circuit line for case items -->
+        <svg class="svg-line absolute right-0 top-0 w-full h-[200px] pointer-events-none z-0" viewBox="0 0 1000 200" preserveAspectRatio="none">
+            <path d="M0,100 L300,100 L350,150 L800,150 L900,50 L1000,50" fill="transparent" stroke="rgba(0,240,255,0.2)" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+        </svg>
         <div class="container">
             <div class="section-title reveal">
                 <h2>Case Studies</h2>

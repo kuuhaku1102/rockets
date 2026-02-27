@@ -13,8 +13,14 @@ function akihabara_rockets_scripts() {
     // Enqueue FontAwesome for icons (using CDN for simplicity)
     wp_enqueue_script( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js', array(), '6.4.0', true );
     
+    // Three.js & GSAP
+    wp_enqueue_script( 'three-js', 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js', array(), '128', true );
+    wp_enqueue_script( 'gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', array(), '3.12.2', true );
+    wp_enqueue_script( 'gsap-scrolltrigger', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js', array('gsap'), '3.12.2', true );
+
     // Main Custom JS
-    wp_enqueue_script( 'main-js', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), '1.0.0', true );
+    wp_enqueue_script( 'webgl-bg-js', get_template_directory_uri() . '/assets/js/webgl-bg.js', array('three-js', 'gsap-scrolltrigger'), '1.0.0', true );
+    wp_enqueue_script( 'main-js', get_template_directory_uri() . '/assets/js/main.js', array('jquery', 'gsap-scrolltrigger'), '1.0.0', true );
 }
 add_action( 'wp_enqueue_scripts', 'akihabara_rockets_scripts' );
 
