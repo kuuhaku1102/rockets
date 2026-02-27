@@ -1,0 +1,380 @@
+/* TCG Theme Styling - Dark Mode Cyber Aesthetic */
+:root {
+    --tcg-bg: #030712;
+    --tcg-surface: #0f172a;
+    --tcg-glow: #00f0ff;
+    --tcg-glow-alt: #f000ff;
+    --tcg-text: #f8fafc;
+    --tcg-border: rgba(0, 240, 255, 0.3);
+}
+
+body {
+    background-color: var(--tcg-bg);
+    color: var(--tcg-text);
+}
+
+.home-tcg-theme {
+    background-color: var(--tcg-bg);
+}
+
+/* Hero Section */
+.tcg-hero {
+    position: relative;
+    height: 100vh;
+    min-height: 800px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hero-bg .hero-image-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+    animation: scaleIn 20s linear infinite alternate;
+}
+
+@keyframes scaleIn {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+}
+
+.hero-overlay-cyber {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(3,7,18,0.95) 0%, rgba(15,23,42,0.85) 100%);
+    box-shadow: inset 0 0 100px rgba(0,240,255,0.1);
+}
+
+.cyber-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    background: rgba(0,240,255,0.1);
+    border: 1px solid var(--tcg-glow);
+    border-radius: 20px;
+    color: var(--tcg-glow);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0,240,255,0.2);
+}
+
+.cyber-glitch {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(0,240,255,0.5);
+    margin-bottom: 30px;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 40px;
+}
+
+.cyber-btn {
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.hover-glow {
+    background: linear-gradient(90deg, #00f0ff, #0077ff);
+    box-shadow: 0 0 20px rgba(0,240,255,0.5);
+    border: none;
+    color: #000;
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 35px rgba(0,240,255,0.8);
+    color: #000;
+    transform: translateY(-2px);
+}
+
+.outline-glow {
+    background: transparent;
+    border: 1px solid var(--tcg-glow);
+    color: var(--tcg-glow);
+}
+
+.outline-glow:hover {
+    background: rgba(0,240,255,0.1);
+    box-shadow: inset 0 0 15px rgba(0,240,255,0.3);
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* 3D Services Grid (TCG card style) */
+.services-3d-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    perspective: 1000px;
+}
+
+.service-tcg-card {
+    height: 400px;
+    perspective: 1000px;
+    display: block;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    cursor: pointer;
+}
+
+.service-tcg-card:hover .card-inner {
+    transform: rotateY(180deg) scale(1.05);
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    border: 2px solid rgba(0,240,255,0.2);
+}
+
+.card-front {
+    background-color: var(--tcg-surface);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.card-icon {
+    font-size: 3rem;
+    color: var(--tcg-glow);
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 10px rgba(0,240,255,0.8));
+}
+
+.card-front h3 {
+    color: #fff;
+    font-size: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    z-index: 2;
+}
+
+.card-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, rgba(0,240,255,0.2) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.service-tcg-card:hover .card-glow {
+    opacity: 1;
+}
+
+.card-back {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 30px;
+    text-align: center;
+}
+
+.card-back p {
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.read-more {
+    color: var(--tcg-glow);
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+/* Sections Global */
+.section-padding { padding: 120px 0; }
+.section-title h2 { color: #fff; font-size: 3rem; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+
+/* About Rockets */
+.about-rockets-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.about-rockets-text h3 {
+    color: var(--tcg-glow);
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.check-list li {
+    background: rgba(255,255,255,0.05);
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 3px solid var(--tcg-glow);
+}
+
+.neon-text { color: var(--tcg-glow); }
+
+.cyber-frame-img {
+    width: 100%;
+    border-radius: 12px;
+    border: 2px solid rgba(0, 240, 255, 0.4);
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+}
+
+.floating-hologram {
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    background: rgba(15,23,42,0.9);
+    border: 1px solid var(--tcg-glow);
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0 20px rgba(0,240,255,0.4);
+    animation: floatParticle 4s ease-in-out infinite alternate;
+}
+
+.floating-hologram i {
+    font-size: 2rem;
+    color: var(--tcg-glow);
+    margin-bottom: 10px;
+}
+.floating-hologram span {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Cases Slider Approximation (Flex Grid) */
+.cases-slider {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+.cyber-panel {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,240,255,0.1);
+    border-radius: 12px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s;
+}
+
+.cyber-panel:hover {
+    border-color: rgba(0,240,255,0.5);
+    box-shadow: 0 10px 30px rgba(0,240,255,0.1);
+    transform: translateY(-5px);
+}
+
+.neon-badge {
+    background: rgba(0,240,255,0.1);
+    color: var(--tcg-glow);
+    border: 1px solid var(--tcg-glow);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.case-body { margin-top: 20px; }
+.data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; }
+.label { color: #94a3b8; }
+.val.bad { color: #f87171; }
+.val.good { color: #4ade80; font-size: 1.2rem; text-shadow: 0 0 5px rgba(74, 222, 128, 0.4); }
+
+.case-desc { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; margin-top: 15px; font-size: 0.9rem; color: #cbd5e1; }
+
+/* Flow Steps */
+.flow-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.flow-steps .step {
+    flex: 1;
+    position: relative;
+    text-align: center;
+}
+
+.step-num {
+    position: absolute;
+    top: -15px; right: -15px;
+    font-size: 3rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.05);
+}
+
+.step-icon {
+    font-size: 2.5rem;
+    color: var(--tcg-glow);
+    margin-bottom: 20px;
+}
+
+.step-connector {
+    display: flex;
+    align-items: center;
+    height: 150px;
+    color: rgba(0,240,255,0.3);
+    font-size: 1.5rem;
+}
+
+/* Bottom CTA */
+.bottom-cta {
+    text-align: center;
+    border-top: 1px solid rgba(0,240,255,0.2);
+}
+
+.cta-bg-image {
+    position: absolute; top:0; left:0; width:100%; height:100%;
+}
+.cta-bg-image img {
+    width: 100%; height: 100%; object-fit: cover; opacity: 0.2; filter: grayscale(100%); mix-blend-mode: luminosity;
+}
+.cta-overlay.glass {
+    position: absolute; top:0; left:0; width:100%; height:100%;
+    background: linear-gradient(to top, rgba(3,7,18,1), rgba(3,7,18,0.7));
+}
+
+@media (max-width: 900px) {
+    .about-rockets-grid, .flow-steps { flex-direction: column; grid-template-columns: 1fr; }
+    .hero-buttons { flex-direction: column; }
+    .step-connector { display: none; }
+    .cyber-glitch { font-size: 2.5rem; }
+}

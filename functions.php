@@ -7,6 +7,7 @@ function akihabara_rockets_scripts() {
     // Styles
     wp_enqueue_style( 'google-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Sora:wght@400;600;700&display=swap', array(), null );
     wp_enqueue_style( 'main-style', get_stylesheet_uri(), array(), '1.0.0' );
+    wp_enqueue_style( 'tcg-theme-style', get_template_directory_uri() . '/assets/css/tcg-theme.css', array('main-style'), '1.0.0' );
     
     // Scripts
     // Enqueue FontAwesome for icons (using CDN for simplicity)
