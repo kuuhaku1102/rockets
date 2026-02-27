@@ -10,22 +10,30 @@
         <path d="M50,0 Q60,30 50,70 T40,100" fill="transparent" stroke="rgba(0,240,255,0.4)" stroke-width="0.2" vector-effect="non-scaling-stroke"></path>
     </svg>
 
-    <!-- Hero Section -->
-    <section class="hero tcg-hero relative z-10" id="home">
-        <div class="hero-overlay-cyber"></div>
-        <div class="hero-content">
-            <div class="cyber-badge reveal">TCG Shop Specialist Group</div>
-            <h1 class="hero-title cyber-glitch reveal" data-text="トレカショップの利益を、設計する。">トレカショップの利益を、<br>設計する。</h1>
-            <p class="hero-subtitle reveal">秋葉原Rocketsはデータとテクノロジーを駆使し、<br>トレカ事業の「在庫回転率」と「利益率」を最大化します。</p>
+    <!-- Hero Section (Team Rocket / Villain Vibe) -->
+    <section class="hero tcg-hero relative z-10" id="home" style="overflow: hidden;">
+        
+        <!-- Giant Team Rocket background 'R' SVG (GSAP animation target) -->
+        <svg id="rocket-r-bg" class="absolute z-0 pointer-events-none" style="top: 50%; right: -5%; transform: translateY(-50%); width: 60vw; height: auto; max-width: 800px; opacity: 0; filter: drop-shadow(0 0 20px #ff0033);" viewBox="0 0 200 250">
+            <!-- R letterform path -->
+            <path class="draw-r-path" d="M 40 20 L 140 20 C 180 20 180 100 140 100 L 40 100 M 40 20 L 40 230 M 100 100 L 160 230" fill="transparent" stroke="#ff0033" stroke-width="25" stroke-linecap="square" stroke-linejoin="miter"></path>
+        </svg>
+
+        <div class="hero-overlay-cyber" style="background: radial-gradient(circle at center, transparent 0%, rgba(5,0,2,0.8) 100%);"></div>
+        
+        <div class="hero-content relative z-10">
+            <div class="cyber-badge reveal" style="border-color: #ff0033; color: #ff0033; background: rgba(255,0,51,0.1); text-shadow: 0 0 10px rgba(255,0,51,0.5);">なんだかんだと課題があれば、解決するのが世の情け。</div>
+            <h1 class="hero-title cyber-glitch reveal" data-text="トレカ業界の利益を、支配する。" style="text-shadow: 2px 2px 0px rgba(255,0,51,0.8), -2px -2px 0px rgba(0,240,255,0.8);">トレカ業界の利益を、<br>支配する。</h1>
+            <p class="hero-subtitle reveal" style="font-weight: bold; text-shadow: 0 0 10px #000;">秋葉原Rocketsはデータとテクノロジーを駆使し、<br>トレカ事業の「在庫回転率」と「利益率」を最大化します。</p>
             <div class="hero-buttons reveal">
-                <a href="<?php echo home_url('/contact/'); ?>" class="btn btn-primary cyber-btn hover-glow"><i class="fas fa-comment-dots"></i> 無料相談</a>
-                <a href="<?php echo home_url('/document/'); ?>" class="btn btn-secondary cyber-btn outline-glow"><i class="fas fa-file-download"></i> サービス資料DL</a>
+                <a href="<?php echo home_url('/contact/'); ?>" class="btn btn-primary cyber-btn hover-glow" style="background: linear-gradient(90deg, #b91c1c, #ff0033); border: none; box-shadow: 0 0 15px rgba(255,0,51,0.5);"><i class="fas fa-comment-dots"></i> 無料相談</a>
+                <a href="<?php echo home_url('/document/'); ?>" class="btn btn-secondary cyber-btn outline-glow" style="border-color: #ff0033; color: #ff0033;"><i class="fas fa-file-download"></i> サービス資料DL</a>
             </div>
         </div>
         
         <div class="scroll-down-indicator">
-            <span>SCROLL</span>
-            <div class="mouse"><div class="wheel"></div></div>
+            <span style="color: #ff0033;">SCROLL</span>
+            <div class="mouse" style="border-color: #ff0033;"><div class="wheel" style="background: #ff0033;"></div></div>
         </div>
     </section>
 
