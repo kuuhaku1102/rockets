@@ -45,6 +45,7 @@
             <ul>
                 <li><a href="<?php echo home_url('/about/'); ?>">About</a></li>
                 <li><a href="<?php echo home_url('/service/'); ?>">Services</a></li>
+                <li><a href="<?php echo home_url('/cases/'); ?>">Cases</a></li>
                 <li><a href="<?php echo home_url('/company/'); ?>">Company</a></li>
                 <li><a href="<?php echo home_url('/contact/'); ?>">Contact</a></li>
             </ul>
