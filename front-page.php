@@ -1,7 +1,21 @@
 <?php get_header(); ?>
 
-<!-- WebGL Canvas Background -->
-<canvas id="bg-canvas" class="webgl-bg-canvas"></canvas>
+<!-- Secret Hideout Corridor Background (CSS/GSAP Animation) -->
+<div class="hideout-corridor">
+    <div class="corridor-tunnel">
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+    </div>
+    <div class="fog-overlay"></div>
+</div>
 
 <main id="content" class="home-tcg-theme relative z-10">
 
@@ -290,5 +304,25 @@
     </section>
 
 </main>
+
+<!-- Custom Corridor GSAP Interactive Script -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // GSAP Walkthrough Corridor Twist and Dive on Scroll
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.to('.corridor-tunnel', {
+            rotationZ: 10,
+            rotationX: 5,
+            y: 80, // slight sinking feeling
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1.5
+            }
+        });
+    }
+});
+</script>
 
 <?php get_footer(); ?>
