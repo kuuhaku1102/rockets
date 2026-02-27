@@ -6,8 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const scene = new THREE.Scene();
 
-    // Add Fog (Dark Red/Black like villain hideout)
-    scene.fog = new THREE.FogExp2(0x0a0002, 0.001);
+    // Add Fog (Deep dark gray/black space)
+    scene.fog = new THREE.FogExp2(0x050508, 0.001);
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
     camera.position.z = 40;
@@ -35,10 +35,10 @@ document.addEventListener("DOMContentLoaded", () => {
     geometry.computeVertexNormals();
 
     const material = new THREE.MeshBasicMaterial({
-        color: 0xff0033, // Team Rocket Red
+        color: 0x888888, // Sleek Corporate Silver / Machine grey
         wireframe: true,
         transparent: true,
-        opacity: 0.2
+        opacity: 0.1
     });
 
     const terrain = new THREE.Mesh(geometry, material);
@@ -57,10 +57,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     const particleMaterial = new THREE.PointsMaterial({
-        size: 0.6,
-        color: 0xffffff, // White
+        size: 0.8,
+        color: 0xffffff, // White starlight
         transparent: true,
-        opacity: 0.7,
+        opacity: 0.5,
         blending: THREE.AdditiveBlending
     });
 
