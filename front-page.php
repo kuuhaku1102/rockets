@@ -46,8 +46,8 @@
         </div>
         
         <div class="scroll-down-indicator">
-            <span style="color: #ff0033;">SCROLL</span>
-            <div class="mouse" style="border-color: #ff0033;"><div class="wheel" style="background: #ff0033;"></div></div>
+            <span style="color: #cbd5e1;">SCROLL</span>
+            <div class="mouse" style="border-color: #cbd5e1;"><div class="wheel" style="background: #cbd5e1;"></div></div>
         </div>
     </section>
 
