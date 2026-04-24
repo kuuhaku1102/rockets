@@ -38,3 +38,14 @@ function akihabara_rockets_setup() {
     ) );
 }
 add_action( 'after_setup_theme', 'akihabara_rockets_setup' );
+
+// PSA Tracker AJAX Save (Database Persistence)
+add_action('wp_ajax_psa_tracker_save', 'rockets_psa_tracker_save');
+function rockets_psa_tracker_save() {
+    if (!is_user_logged_in()) {
+        wp_send_json_error('Unauthorized');
+    }
+    $data = isset($_POST['data']) ? wp_unslash($_POST['data']) : '[]';
+    update_option('rockets_psa_tracker_data', $data);
+    wp_send_json_success('Saved');
+}

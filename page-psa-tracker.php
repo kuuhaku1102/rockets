@@ -2,7 +2,13 @@
 /*
 Template Name: PSA Tracker
 */
-get_header(); ?>
+if ( !is_user_logged_in() ) {
+    wp_redirect( wp_login_url( get_permalink() ) );
+    exit;
+}
+get_header(); 
+$db_data_json = get_option('rockets_psa_tracker_data', '[]');
+?>
 
 <main id="content" class="home-tcg-theme relative z-10" style="min-height: 100vh; background-color: #030712;">
 
@@ -10,7 +16,7 @@ get_header(); ?>
     <section class="page-header relative z-10" style="padding: 60px 0 20px;">
         <div class="container text-center">
             <h1 style="font-size: 2.2rem; margin-bottom: 5px; color: #fff; font-family: 'Share Tech Mono', monospace;">PSA ROI Tracker</h1>
-            <p style="color: #64748b; font-size: 0.9rem;">実務用データトラッカー（データはブラウザに保存されます）</p>
+            <p style="color: #64748b; font-size: 0.9rem;">クラウド同期対応トラッカー（ログイン中のユーザー間でデータ共有）</p>
         </div>
     </section>
 
@@ -201,6 +207,8 @@ get_header(); ?>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     
+    const adminAjaxUrl = '<?php echo admin_url("admin-ajax.php"); ?>';
+    
     // --- Elements ---
     const form = document.getElementById('tracker-form');
     const iptDate = document.getElementById('ipt-date');
@@ -220,11 +228,19 @@ document.addEventListener("DOMContentLoaded", () => {
     let cardsData = [];
     let currentFilter = { start: null, end: null };
     
-    // Load data
-    const savedData = localStorage.getItem('rockets_psa_tracker');
-    if (savedData) {
+    // Load data from WP DB (allow localStorage fallback once if DB is empty)
+    const dbDataRaw = <?php echo json_encode($db_data_json); ?>;
+    let fallbackData = '[]';
+    
+    if (!dbDataRaw || dbDataRaw === '[]') {
+        fallbackData = localStorage.getItem('rockets_psa_tracker') || '[]';
+    } else {
+        fallbackData = dbDataRaw;
+    }
+
+    if (fallbackData) {
         try { 
-            const parsed = JSON.parse(savedData); 
+            const parsed = JSON.parse(fallbackData); 
             cardsData = parsed.map(c => ({
                 id: c.id,
                 date: c.date || new Date().toISOString().split('T')[0],
@@ -320,7 +336,27 @@ document.addEventListener("DOMContentLoaded", () => {
         elProfit.innerText = '¥' + formatJPY(grandProfit);
         elProfit.style.color = grandProfit >= 0 ? '#4ade80' : '#ef4444';
 
+        // Keep local storage as a quick cache/backup
         localStorage.setItem('rockets_psa_tracker', JSON.stringify(cardsData));
+        
+        // Sync to cloud Database (WP Options)
+        saveToServer(cardsData);
+    };
+
+    // AJAX Save Logic
+    let saveTimeout = null;
+    const saveToServer = (dataArray) => {
+        // Debounce to prevent spamming
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+            const formData = new FormData();
+            formData.append('action', 'psa_tracker_save');
+            formData.append('data', JSON.stringify(dataArray));
+            fetch(adminAjaxUrl, {
+                method: 'POST',
+                body: formData
+            }).catch(e => console.error("DB Sync failed", e));
+        }, 500);
     };
 
     // Add Card Form Submit
