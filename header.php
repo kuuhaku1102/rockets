@@ -48,6 +48,7 @@
                 <li><a href="<?php echo home_url('/cases/'); ?>">Cases</a></li>
                 <li><a href="<?php echo home_url('/strengths/'); ?>">Strengths</a></li>
                 <li><a href="<?php echo home_url('/pricing/'); ?>">Pricing</a></li>
+                <li><a href="<?php echo home_url('/psa-tracker/'); ?>">Tool</a></li>
                 <li><a href="<?php echo home_url('/company/'); ?>">Company</a></li>
                 <li><a href="<?php echo home_url('/contact/'); ?>">Contact</a></li>
             </ul>
