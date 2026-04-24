@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
     tbody.addEventListener('change', (e) => {
         if (e.target.classList.contains('sell-input-field')) {
             const id = e.target.getAttribute('data-id');
-            const card = cardsData.find(c => c.id === id);
+            const card = cardsData.find(c => String(c.id) === String(id));
             if (card) {
                 card.sell = parseInt(e.target.value) || 0;
                 renderTable();
@@ -348,7 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (btn) {
             const id = btn.getAttribute('data-id');
             if(confirm('このデータを削除しますか？')) {
-                cardsData = cardsData.filter(c => c.id !== id);
+                cardsData = cardsData.filter(c => String(c.id) !== String(id));
                 renderTable();
             }
         }
