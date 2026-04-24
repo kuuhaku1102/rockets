@@ -223,7 +223,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // Load data
     const savedData = localStorage.getItem('rockets_psa_tracker');
     if (savedData) {
-        try { cardsData = JSON.parse(savedData); } catch(e) {}
+        try { 
+            const parsed = JSON.parse(savedData); 
+            cardsData = parsed.map(c => ({
+                id: c.id,
+                date: c.date || new Date().toISOString().split('T')[0],
+                name: c.name || '',
+                buy: c.buy || 0,
+                isPsa: !!c.isPsa,
+                psaFee: c.psaFee !== undefined ? c.psaFee : (c.fee || 0),
+                shippingFee: c.shippingFee || 0,
+                sell: c.sell || 0
+            }));
+        } catch(e) {}
     }
 
     // Toggle PSA inputs
