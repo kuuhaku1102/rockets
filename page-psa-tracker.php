@@ -164,10 +164,15 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                 <!-- Cash Logs Area -->
                 <div style="flex: 1; min-width: 350px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: left;">
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 15px;">
-                        <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
-                            <i class="fas fa-history" style="color:#10b981; margin-right:5px;"></i> 資金追加ログ (出納帳)
-                        </h3>
-                        <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
+                                <i class="fas fa-history" style="color:#10b981;"></i> 資金追加ログ
+                            </h3>
+                            <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
+                        </div>
+                        <button id="btn-export-cash" style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold;">
+                            <i class="fas fa-file-excel"></i> 出力
+                        </button>
                     </div>
                     
                     <div style="background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
@@ -200,10 +205,15 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                 <!-- PSA Submission Logs Area -->
                 <div style="flex: 1; min-width: 350px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: left;">
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 15px;">
-                        <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
-                            <i class="fas fa-certificate" style="color:#ef4444; margin-right:5px;"></i> PSA鑑定・送料 経費ログ
-                        </h3>
-                        <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
+                                <i class="fas fa-certificate" style="color:#ef4444;"></i> PSA経費ログ
+                            </h3>
+                            <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
+                        </div>
+                        <button id="btn-export-psa" style="background: #ef4444; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold;">
+                            <i class="fas fa-file-excel"></i> 出力
+                        </button>
                     </div>
                     
                     <div style="background: #fff1f2; padding: 15px; border-radius: 6px; border: 1px solid #fecdd3; margin-bottom: 15px;">
@@ -593,25 +603,49 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // CSV
-    document.getElementById('btn-export-csv').addEventListener('click', () => {
-        if(appState.cards.length === 0) { alert('データがありません。'); return; }
-        let csvContent = "\uFEFF仕入日,カード名,支払方法,仕入額,PSA,販売額,粗利益,利益率\n";
-        appState.cards.forEach(c => {
-            const profit = c.sell === 0 ? 0 : (c.sell - c.buy);
-            const margin = c.sell > 0 ? ((profit / c.sell) * 100).toFixed(1) + '%' : '';
-            csvContent += [
-                c.date, `"${c.name.replace(/"/g, '""')}"`,
-                c.paymentMethod === 'credit' ? 'クレジット' : '現金',
-                c.buy, c.isPsa ? '有' : '無', c.sell,
-                c.sell === 0 ? '' : profit, margin
-            ].join(",") + "\n";
-        });
+    // CSV Exports
+    const exportCSV = (filename, headers, rows) => {
+        if(rows.length === 0) { alert('エクスポートするデータがありません。'); return; }
+        const csvContent = "\uFEFF" + headers.join(",") + "\n" + rows.map(r => r.join(",")).join("\n");
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
         link.setAttribute("href", URL.createObjectURL(blob));
-        link.setAttribute("download", `tracker_${new Date().getTime()}.csv`);
+        link.setAttribute("download", `${filename}_${new Date().getTime()}.csv`);
         link.click();
+    };
+
+    document.getElementById('btn-export-csv').addEventListener('click', () => {
+        const data = filterByActiveTab(appState.cards, 'date');
+        exportCSV('cards', ['仕入日','カード名','支払方法','仕入額','PSA','販売額','粗利益','利益率'], 
+            data.map(c => {
+                const profit = c.sell === 0 ? 0 : (c.sell - c.buy);
+                const margin = c.sell > 0 ? ((profit / c.sell) * 100).toFixed(1) + '%' : '';
+                return [
+                    c.date, `"${(c.name||'').replace(/"/g, '""')}"`,
+                    c.paymentMethod === 'credit' ? 'クレジット' : '現金',
+                    c.buy, c.isPsa ? '有' : '無', c.sell,
+                    c.sell === 0 ? '' : profit, margin
+                ];
+            })
+        );
+    });
+
+    document.getElementById('btn-export-cash').addEventListener('click', () => {
+        const data = filterByActiveTab(appState.cashLogs, 'date');
+        exportCSV('cash_logs', ['日付','入金額','メモ'], 
+            data.map(L => [
+                L.date, L.amount, `"${(L.memo || '').replace(/"/g, '""')}"`
+            ])
+        );
+    });
+
+    document.getElementById('btn-export-psa').addEventListener('click', () => {
+        const data = filterByActiveTab(appState.psaLogs, 'date');
+        exportCSV('psa_logs', ['日付','鑑定料','送料','経費計','メモ'], 
+            data.map(L => [
+                L.date, L.appraisal || 0, L.shipping || 0, (L.appraisal || 0) + (L.shipping || 0), `"${(L.memo || '').replace(/"/g, '""')}"`
+            ])
+        );
     });
 
     renderAll();
