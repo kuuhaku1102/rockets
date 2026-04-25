@@ -16,7 +16,7 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
     <section class="page-header relative z-10" style="padding: 50px 0 20px;">
         <div class="container text-center">
             <h1 style="font-size: 2.2rem; margin-bottom: 5px; color: #1e293b; font-weight: bold; font-family: 'Share Tech Mono', sans-serif;">PSA ROI Tracker<span style="font-size: 1rem; color:#8b5cf6; margin-left:10px;">PRO</span></h1>
-            <p style="color: #64748b; font-size: 0.9rem;">クラウド同期 / 月別表示 / 現金出納・PSA経費管理</p>
+            <p style="color: #64748b; font-size: 0.9rem;">クラウド同期 / 月別表示 / 在庫・販売履歴・現金出納・PSA一元管理</p>
         </div>
     </section>
 
@@ -38,7 +38,7 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                     </div>
                 </div>
 
-                <!-- Stats Box -->
+                <!-- Stats Box (Cash Flow Basis) -->
                 <div style="flex: 3; display: flex; gap: 15px; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 120px; background: #fff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
                         <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 5px;">総仕入額 <span class="stat-label" style="font-size:0.7rem; background:#f1f5f9; padding:2px 6px; border-radius:10px; margin-left:5px;">全期間</span></div>
@@ -49,7 +49,7 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                         <div id="total-sell" style="font-size: 1.6rem; font-weight: bold; color: #334155; font-family: 'Share Tech Mono', monospace;">¥0</div>
                     </div>
                     <div style="flex: 1; min-width: 120px; background: #fff; border: 1px solid #8b5cf6; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(139,92,246,0.1);">
-                        <div style="color: #8b5cf6; font-size: 0.8rem; margin-bottom: 5px; font-weight: bold;">純利益 (予測含) <span class="stat-label" style="font-size:0.7rem; background:#ede9fe; padding:2px 6px; border-radius:10px; margin-left:5px;">全期間</span></div>
+                        <div style="color: #8b5cf6; font-size: 0.8rem; margin-bottom: 5px; font-weight: bold;">純利益 (キャッシュフロー) <span class="stat-label" style="font-size:0.7rem; background:#ede9fe; padding:2px 6px; border-radius:10px; margin-left:5px;">全期間</span></div>
                         <div id="total-profit" style="font-size: 1.8rem; font-weight: bold; color: #334155; font-family: 'Share Tech Mono', monospace;">¥0</div>
                     </div>
                 </div>
@@ -119,20 +119,22 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                 </div>
             </div>
 
-            <!-- Card Tracker Table Area -->
-            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; max-width: 1200px; margin: 0 auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                
+            <!-- Inventory (Unsold) Area -->
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; max-width: 1200px; margin: 0 auto 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
-                        <i class="fas fa-box" style="color:#3b82f6; margin-right:5px;"></i> カード在庫一覧 <span class="table-title-suffix" style="font-size:0.8rem; color:#64748b; margin-left:10px;">(全期間)</span>
-                    </h3>
-                    <button id="btn-export-csv" style="background: #10b981; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold;">
-                        <i class="fas fa-file-excel"></i> CSV出力
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
+                            <i class="fas fa-box" style="color:#3b82f6;"></i> 現状のカード在庫一覧
+                        </h3>
+                        <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
+                    </div>
+                    <button id="btn-export-inv" style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold;">
+                        <i class="fas fa-file-excel"></i> 出力
                     </button>
                 </div>
 
                 <div style="overflow-x: auto; text-align: left;">
-                    <table style="width: 100%; border-collapse: collapse; min-width: 950px; font-size: 0.85rem;">
+                    <table style="width: 100%; border-collapse: collapse; min-width: 600px; font-size: 0.85rem;">
                         <thead>
                             <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
                                 <th class="ths">仕入日</th>
@@ -140,20 +142,49 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                                 <th class="ths text-center">支払</th>
                                 <th class="ths text-right">仕入額</th>
                                 <th class="ths text-center">PSA</th>
-                                <th class="ths text-right" style="background: #f3e8ff;">販売額 (未売は0)</th>
-                                <th class="ths text-right">粗利益</th>
-                                <th class="ths text-right">利益率</th>
-                                <th class="ths text-center" style="width: 40px;">-</th>
+                                <th class="ths text-center" style="width: 80px;">アクション</th>
                             </tr>
                         </thead>
-                        <tbody id="tracker-tbody">
-                            <!-- JS Will populate this -->
-                        </tbody>
+                        <tbody id="inventory-tbody"></tbody>
                     </table>
-                    
-                    <div id="empty-state" style="padding: 40px 20px; text-align: center; color: #94a3b8;">
-                        <i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom: 10px; opacity:0.3;"></i><br>
-                        該当するカードデータがありません。
+                    <div id="inv-empty-state" style="padding: 20px; text-align: center; color: #94a3b8; display:none;">
+                        該当する在庫データがありません。
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales (Sold) Area -->
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; max-width: 1200px; margin: 0 auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
+                            <i class="fas fa-handshake" style="color:#8b5cf6;"></i> カード販売済み履歴
+                        </h3>
+                        <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
+                    </div>
+                    <button id="btn-export-sales" style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold;">
+                        <i class="fas fa-file-excel"></i> 出力
+                    </button>
+                </div>
+
+                <div style="overflow-x: auto; text-align: left;">
+                    <table style="width: 100%; border-collapse: collapse; min-width: 800px; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                                <th class="ths" style="color:#8b5cf6;">販売日</th>
+                                <th class="ths">仕入日</th>
+                                <th class="ths">カード名</th>
+                                <th class="ths text-right">仕入額</th>
+                                <th class="ths text-right" style="background: #f3e8ff;">販売額</th>
+                                <th class="ths text-right">粗利益</th>
+                                <th class="ths text-right">利益率</th>
+                                <th class="ths text-center" style="width: 80px;">取消・削除</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-tbody"></tbody>
+                    </table>
+                    <div id="sales-empty-state" style="padding: 20px; text-align: center; color: #94a3b8; display:none;">
+                        該当する販売データがありません。
                     </div>
                 </div>
             </div>
@@ -249,6 +280,26 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
     </section>
 </main>
 
+<!-- Sell Action Modal -->
+<div id="modal-sell" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:25px; border-radius:8px; width:100%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+        <h3 style="margin-top:0; color:#1e293b;"><i class="fas fa-hand-holding-usd" style="color:#8b5cf6;"></i> カードを販売済みにする</h3>
+        <p id="modal-sell-cardname" style="font-weight:bold; color:#334155; margin-bottom:15px; padding-bottom:10px; border-bottom:1px dashed #cbd5e1;"></p>
+        
+        <label class="form-label">販売日</label>
+        <input type="date" id="modal-sell-date" class="light-input" style="margin-bottom:15px;">
+        
+        <label class="form-label">販売額 (円)</label>
+        <input type="number" id="modal-sell-price" class="light-input" placeholder="例: 15000" style="margin-bottom:20px; font-weight:bold; font-size:1.1rem; padding:10px;">
+        
+        <div style="display:flex; gap:10px;">
+            <button id="modal-btn-cancel" style="flex:1; padding:10px; background:#e2e8f0; border:none; cursor:pointer; border-radius:4px; font-weight:bold; color:#475569;">キャンセル</button>
+            <button id="modal-btn-confirm" style="flex:1; padding:10px; background:#8b5cf6; border:none; cursor:pointer; border-radius:4px; font-weight:bold; color:#fff;">売却を記録</button>
+        </div>
+        <input type="hidden" id="modal-sell-id">
+    </div>
+</div>
+
 <style>
 /* Light Theme CSS Adjustments */
 .form-label { display: block; font-size: 0.75rem; color: #475569; margin-bottom: 5px; font-weight: bold; }
@@ -266,15 +317,13 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
 .tracker-row:hover { background: #f1f5f9; }
 .tracker-row td { padding: 10px; vertical-align: middle; color: #334155; }
 
-.sell-input-field {
-    width: 100px; text-align: right; padding: 4px 8px; background: #fff;
-    border: 1px solid #cbd5e1; border-radius: 4px; color: #1e293b;
-    font-family: 'Share Tech Mono', monospace; font-weight: bold;
-}
-.sell-input-field:focus { border-color: #8b5cf6; outline: none; box-shadow: 0 0 0 2px rgba(139,92,246,0.2); }
-
 .btn-delete { background: transparent; color: #cbd5e1; border: none; cursor: pointer; font-size: 0.9rem; }
 .btn-delete:hover { color: #ef4444; }
+.btn-action-sell { background: #8b5cf6; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; transition:0.2s; }
+.btn-action-sell:hover { background: #7c3aed; }
+.btn-undo-sell { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: bold; margin-right:5px; transition:0.2s; }
+.btn-undo-sell:hover { background: #e2e8f0; }
+
 .profit-pos { color: #10b981; }
 .profit-neg { color: #ef4444; }
 
@@ -302,6 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('ipt-date').value = today;
     document.getElementById('ipt-cash-date').value = today;
     document.getElementById('ipt-psa-date').value = today;
+    document.getElementById('modal-sell-date').value = today;
 
     // --- State ---
     let appState = { cards: [], cashLogs: [], psaLogs: [] };
@@ -338,16 +388,21 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
         return {
-            id: c.id, date: c.date || today, name: c.name || '',
-            paymentMethod: c.paymentMethod || 'cash', buy: c.buy || 0,
-            isPsa: !!c.isPsa, sell: c.sell || 0
+            id: c.id, 
+            date: c.date || today, 
+            name: c.name || '',
+            paymentMethod: c.paymentMethod || 'cash', 
+            buy: c.buy || 0,
+            isPsa: !!c.isPsa, 
+            sell: c.sell || 0,
+            sellDate: c.sellDate || (c.sell > 0 ? (c.date || today) : null)
         };
     });
 
     // Year Dropdown
     const currYear = new Date().getFullYear();
     const tabYearSelect = document.getElementById('tab-year');
-    for(let y = currYear - 2; y <= currYear + 2; y++) {
+    for(let y = currYear - 3; y <= currYear + 2; y++) {
         const opt = document.createElement('option');
         opt.value = y; opt.innerText = y + '年';
         if(y === currYear) opt.selected = true;
@@ -367,14 +422,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
-    // Auto-update Tab Labels based on selection
     const updateHeaderLabels = () => {
         const labelStr = activeTabMonth === 'all' ? '全期間' : `${tabYearSelect.value} ${activeTabMonth}月`;
         document.querySelectorAll('.table-title-suffix').forEach(el => el.innerText = `(${labelStr})`);
         document.querySelectorAll('.stat-label').forEach(el => el.innerText = labelStr);
     };
 
-    // Auto-switch Tab Logic when inserting new record
     const ensureDateVisible = (dateStr) => {
         if (activeTabMonth === 'all') return;
         const d = new Date(dateStr);
@@ -398,28 +451,129 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 500);
     };
 
-    // Render 
+    // CSV Exports helper
+    const exportCSV = (filename, headers, rows) => {
+        if(rows.length === 0) { alert('エクスポートするデータがありません。'); return; }
+        const csvContent = "\uFEFF" + headers.join(",") + "\n" + rows.map(r => r.join(",")).join("\n");
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.setAttribute("href", URL.createObjectURL(blob));
+        link.setAttribute("download", `${filename}_${new Date().getTime()}.csv`);
+        link.click();
+    };
+
+    // Main Render
     const renderAll = () => {
         updateHeaderLabels();
 
-        // 1. Calculate GLOBAL Cash Balance (Unaffected by Month Tabs!)
-        let globalDeposits = 0;
-        let globalPsaCosts = 0;
-        appState.cashLogs.forEach(l => globalDeposits += l.amount);
-        appState.psaLogs.forEach(l => globalPsaCosts += (l.appraisal || 0) + (l.shipping || 0));
-        
-        let currentCash = globalDeposits - globalPsaCosts;
+        // 1. Split Cards into Unsold (Inventory) and Sold (Sales)
+        const unsoldCards = appState.cards.filter(c => c.sell === 0);
+        const soldCards = appState.cards.filter(c => c.sell > 0);
+
+        // 2. Filter Lists for visible tab based on appropriate Date fields
+        const filteredInv = filterByActiveTab(unsoldCards, 'date');         // inventory uses buy date
+        const filteredSales = filterByActiveTab(soldCards, 'sellDate');     // sales log uses sell date
+        const filteredCash = filterByActiveTab(appState.cashLogs, 'date');
+        const filteredPsa = filterByActiveTab(appState.psaLogs, 'date');
+
+        // --- DASHBOARD MATH ---
+        // Cash is always global
+        let currentCash = 0;
+        appState.cashLogs.forEach(l => currentCash += l.amount);
+        appState.psaLogs.forEach(l => currentCash -= ((l.appraisal || 0) + (l.shipping || 0)));
         appState.cards.forEach(c => {
             if (c.paymentMethod === 'cash') currentCash -= c.buy;
             if (c.sell > 0) currentCash += c.sell;
         });
 
-        // 2. Filter Lists based on selected Tab
-        const filteredCards = filterByActiveTab(appState.cards, 'date');
-        const filteredCash = filterByActiveTab(appState.cashLogs, 'date');
-        const filteredPsa = filterByActiveTab(appState.psaLogs, 'date');
+        // Tab basis PnL
+        let tabBuy = 0; let tabSell = 0; let tabPsaCost = 0;
+        if (activeTabMonth === 'all') {
+            appState.cards.forEach(c => { tabBuy += c.buy; tabSell += c.sell; });
+            appState.psaLogs.forEach(l => tabPsaCost += ((l.appraisal || 0) + (l.shipping || 0)));
+        } else {
+            // For P&L in the current month: 
+            // Buy cost is realized at Purchase Date
+            appState.cards.filter(c => {
+                const d = new Date(c.date);
+                return d.getFullYear() === parseInt(tabYearSelect.value) && (d.getMonth() + 1) === parseInt(activeTabMonth);
+            }).forEach(c => tabBuy += c.buy);
+            
+            // Sell revenue is realized at Sell Date
+            filteredSales.forEach(c => tabSell += c.sell);
+            
+            // PSA cost realized at log Date
+            filteredPsa.forEach(l => tabPsaCost += ((l.appraisal || 0) + (l.shipping || 0)));
+        }
+        
+        const tabProfit = tabSell - tabBuy - tabPsaCost;
+        
+        document.getElementById('total-buy').innerText = '¥' + formatJPY(tabBuy);
+        document.getElementById('total-sell').innerText = '¥' + formatJPY(tabSell);
+        const elProfit = document.getElementById('total-profit');
+        elProfit.innerText = '¥' + formatJPY(tabProfit);
+        elProfit.style.color = tabProfit >= 0 ? '#8b5cf6' : '#ef4444';
+        
+        const elCash = document.getElementById('current-cash');
+        elCash.innerText = '¥' + formatJPY(currentCash);
+        elCash.style.color = currentCash >= 0 ? '#10b981' : '#ef4444';
 
-        // Render Cash Logs
+
+        // --- RENDER INVENTORY TABLE ---
+        const invTbody = document.getElementById('inventory-tbody');
+        invTbody.innerHTML = '';
+        if(filteredInv.length === 0) document.getElementById('inv-empty-state').style.display='block';
+        else document.getElementById('inv-empty-state').style.display='none';
+
+        filteredInv.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(item => {
+            const payBadge = item.paymentMethod === 'credit' ? '<span class="badge-pay badge-credit">💳</span>' : '<span class="badge-pay badge-cash">💵</span>';
+            const tr = document.createElement('tr');
+            tr.className = 'tracker-row';
+            tr.innerHTML = `
+                <td style="color: #64748b;">${item.date}</td>
+                <td style="font-weight: bold;">${item.name}</td>
+                <td class="text-center">${payBadge}</td>
+                <td class="text-right" style="font-family: 'Share Tech Mono', monospace;">¥${formatJPY(item.buy)}</td>
+                <td class="text-center">${item.isPsa ? '<i class="fas fa-check-circle" style="color:#8b5cf6;" title="PSA完了/予定"></i>' : '-'}</td>
+                <td class="text-center">
+                    <button class="btn-action-sell" data-id="${item.id}">売却</button>
+                    <button class="btn-delete" data-id="${item.id}" style="margin-left:8px;"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            invTbody.appendChild(tr);
+        });
+
+        // --- RENDER SALES LOG TABLE ---
+        const salesTbody = document.getElementById('sales-tbody');
+        salesTbody.innerHTML = '';
+        if(filteredSales.length === 0) document.getElementById('sales-empty-state').style.display='block';
+        else document.getElementById('sales-empty-state').style.display='none';
+
+        filteredSales.sort((a,b) => new Date(b.sellDate) - new Date(a.sellDate)).forEach(item => {
+            const profitNum = item.sell - item.buy;
+            const isProfit = profitNum >= 0;
+            const profitClass = isProfit ? 'profit-pos' : 'profit-neg';
+            const margin = ((profitNum / item.sell) * 100).toFixed(1) + '%';
+            
+            const tr = document.createElement('tr');
+            tr.className = 'tracker-row';
+            tr.innerHTML = `
+                <td style="color: #8b5cf6; font-weight:bold;">${item.sellDate}</td>
+                <td style="color: #94a3b8; font-size:0.75rem;">${item.date}</td>
+                <td style="font-weight: bold;">${item.name} <span style="font-size:0.6rem; color:#cbd5e1; margin-left:4px;">${item.isPsa ? 'PSA有' : ''}</span></td>
+                <td class="text-right" style="font-family: 'Share Tech Mono', monospace;">¥${formatJPY(item.buy)}</td>
+                <td class="text-right" style="font-family: 'Share Tech Mono', monospace; font-weight:bold; background: rgba(139,92,246,0.03);">¥${formatJPY(item.sell)}</td>
+                <td class="text-right ${profitClass}" style="font-family: 'Share Tech Mono', monospace; font-weight: bold;">${isProfit ? '+' : ''}${formatJPY(profitNum)}</td>
+                <td class="text-right ${profitClass}" style="font-family: 'Share Tech Mono', monospace;">${margin}</td>
+                <td class="text-center">
+                    <button class="btn-undo-sell" data-id="${item.id}" title="販売を取り消して在庫に戻す"><i class="fas fa-undo"></i></button>
+                    <button class="btn-delete" data-id="${item.id}"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            salesTbody.appendChild(tr);
+        });
+
+        // --- RENDER CASH LOGS ---
         const cTbody = document.getElementById('cash-log-tbody');
         cTbody.innerHTML = '';
         if(filteredCash.length === 0) document.getElementById('cash-empty-state').style.display='block';
@@ -436,17 +590,14 @@ document.addEventListener("DOMContentLoaded", () => {
             cTbody.appendChild(tr);
         });
 
-        // Render PSA Logs
+        // --- RENDER PSA LOGS ---
         const pTbody = document.getElementById('psa-log-tbody');
         pTbody.innerHTML = '';
-        let tabPsaCost = 0; // Sum of PSA costs for the visible tab
-        
         if(filteredPsa.length === 0) document.getElementById('psa-empty-state').style.display='block';
         else document.getElementById('psa-empty-state').style.display='none';
 
         filteredPsa.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(log => {
             const tCost = (log.appraisal || 0) + (log.shipping || 0);
-            tabPsaCost += tCost;
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td style="color: #64748b;">${log.date}</td>
@@ -456,57 +607,6 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
             pTbody.appendChild(tr);
         });
-
-        // Render Cards Tracker
-        const tbody = document.getElementById('tracker-tbody');
-        tbody.innerHTML = '';
-        let tabBuy = 0; let tabSell = 0; 
-        
-        if(filteredCards.length === 0) document.getElementById('empty-state').style.display='block';
-        else document.getElementById('empty-state').style.display='none';
-
-        filteredCards.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach((item) => {
-            tabBuy += item.buy;
-            tabSell += item.sell;
-            const profitNum = item.sell === 0 ? 0 : (item.sell - item.buy);
-            const isProfit = profitNum >= 0;
-            const profitClass = item.sell === 0 ? '' : (isProfit ? 'profit-pos' : 'profit-neg');
-            const margin = item.sell > 0 ? ((profitNum / item.sell) * 100).toFixed(1) + '%' : '-';
-            const payBadge = item.paymentMethod === 'credit' ? '<span class="badge-pay badge-credit">💳</span>' : '<span class="badge-pay badge-cash">💵</span>';
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td style="color: #64748b;">${item.date}</td>
-                <td style="font-weight: bold;">${item.name}</td>
-                <td class="text-center">${payBadge}</td>
-                <td class="text-right" style="font-family: 'Share Tech Mono', monospace;">¥${formatJPY(item.buy)}</td>
-                <td class="text-center">${item.isPsa ? '<i class="fas fa-check-circle" style="color:#8b5cf6;" title="PSA完了/予定"></i>' : '-'}</td>
-                <td class="text-right" style="background: rgba(139,92,246,0.03);">
-                    ¥ <input type="number" class="sell-input-field" data-id="${item.id}" value="${item.sell || ''}" placeholder="未売">
-                </td>
-                <td class="text-right ${profitClass}" style="font-family: 'Share Tech Mono', monospace; font-weight: bold;">
-                    ${item.sell === 0 ? '-' : (isProfit ? '+' : '') + formatJPY(profitNum)}
-                </td>
-                <td class="text-right ${profitClass}" style="font-family: 'Share Tech Mono', monospace;">${margin}</td>
-                <td class="text-center"><button class="btn-delete" data-id="${item.id}"><i class="fas fa-trash"></i></button></td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        // 3. Tab-based Summaries for Dashboard
-        const tabProfit = (tabSell > 0) ? (tabSell - tabBuy - tabPsaCost) : 0;
-        
-        document.getElementById('total-buy').innerText = '¥' + formatJPY(tabBuy);
-        document.getElementById('total-sell').innerText = '¥' + formatJPY(tabSell);
-        
-        const elProfit = document.getElementById('total-profit');
-        elProfit.innerText = '¥' + formatJPY(tabProfit);
-        elProfit.style.color = tabProfit >= 0 ? '#8b5cf6' : '#ef4444';
-
-        // Current Cash is ALWAYS global
-        const elCash = document.getElementById('current-cash');
-        elCash.innerText = '¥' + formatJPY(currentCash);
-        elCash.style.color = currentCash >= 0 ? '#10b981' : '#ef4444';
 
         saveToServer();
     };
@@ -522,7 +622,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     tabYearSelect.addEventListener('change', renderAll);
 
-    // form submissions
+    // Forms
     document.getElementById('tracker-form').addEventListener('submit', (e) => {
         e.preventDefault();
         const d = document.getElementById('ipt-date').value;
@@ -533,7 +633,8 @@ document.addEventListener("DOMContentLoaded", () => {
             paymentMethod: document.getElementById('ipt-payment').value,
             buy: parseInt(document.getElementById('ipt-buy').value) || 0,
             isPsa: document.getElementById('ipt-psa-check').checked,
-            sell: 0 
+            sell: 0,
+            sellDate: null
         });
         document.getElementById('ipt-name').value = '';
         document.getElementById('ipt-buy').value = '';
@@ -559,11 +660,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const appraisal = parseInt(document.getElementById('ipt-psa-fee').value) || 0;
         const shipping = parseInt(document.getElementById('ipt-psa-ship').value) || 0;
         const d = document.getElementById('ipt-psa-date').value || today;
-        
         if (appraisal > 0 || shipping > 0) {
             appState.psaLogs.push({
-                id: Date.now().toString(), date: d,
-                appraisal: appraisal, shipping: shipping, memo: document.getElementById('ipt-psa-memo').value
+                id: Date.now().toString(), date: d, appraisal: appraisal, shipping: shipping, memo: document.getElementById('ipt-psa-memo').value
             });
             document.getElementById('ipt-psa-fee').value = '';
             document.getElementById('ipt-psa-ship').value = '';
@@ -573,58 +672,98 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Delegated UI actions
-    document.body.addEventListener('change', (e) => {
-        if (e.target.classList.contains('sell-input-field')) {
-            const id = e.target.getAttribute('data-id');
-            const card = appState.cards.find(c => String(c.id) === String(id));
-            if (card) { card.sell = parseInt(e.target.value) || 0; renderAll(); }
+    // Delegated Clicks
+    document.body.addEventListener('click', (e) => {
+        // Triggers for Sell Modal
+        const btnSell = e.target.closest('.btn-action-sell');
+        if (btnSell) {
+            const cardId = btnSell.getAttribute('data-id');
+            const card = appState.cards.find(c => String(c.id) === String(cardId));
+            if (card) {
+                document.getElementById('modal-sell-id').value = card.id;
+                document.getElementById('modal-sell-cardname').innerText = card.name + ' (仕入額: ¥' + formatJPY(card.buy) + ')';
+                document.getElementById('modal-sell').style.display = 'flex';
+            }
+        }
+
+        // Undo Sale
+        const btnUndoSell = e.target.closest('.btn-undo-sell');
+        if (btnUndoSell && confirm('販売を取り消して在庫に戻しますか？')) {
+            const cardId = btnUndoSell.getAttribute('data-id');
+            const card = appState.cards.find(c => String(c.id) === String(cardId));
+            if(card) {
+                card.sell = 0;
+                card.sellDate = null;
+                renderAll();
+            }
+        }
+
+        // Delete Card
+        const btnDeleteCard = e.target.closest('.btn-delete');
+        if (btnDeleteCard && confirm('このデータを完全に削除しますか？')) {
+            appState.cards = appState.cards.filter(c => String(c.id) !== String(btnDeleteCard.getAttribute('data-id')));
+            renderAll();
+        }
+        
+        // Delete Logs
+        const btnDeleteLog = e.target.closest('.btn-delete-log');
+        if (btnDeleteLog && confirm('この経費・ログを削除しますか？')) {
+            const id = btnDeleteLog.getAttribute('data-id');
+            const type = btnDeleteLog.getAttribute('data-type');
+            if(type === 'cash') appState.cashLogs = appState.cashLogs.filter(L => String(L.id) !== String(id));
+            if(type === 'psa') appState.psaLogs = appState.psaLogs.filter(L => String(L.id) !== String(id));
+            renderAll();
         }
     });
 
-    document.body.addEventListener('click', (e) => {
-        const btnDeleteCard = e.target.closest('.btn-delete');
-        if (btnDeleteCard) {
-            if(confirm('このデータを削除しますか？')) {
-                appState.cards = appState.cards.filter(c => String(c.id) !== String(btnDeleteCard.getAttribute('data-id')));
-                renderAll();
-            }
-        }
+    // Sell Modal Actions
+    document.getElementById('modal-btn-cancel').addEventListener('click', () => {
+        document.getElementById('modal-sell').style.display = 'none';
+        document.getElementById('modal-sell-price').value = '';
+    });
+
+    document.getElementById('modal-btn-confirm').addEventListener('click', () => {
+        const id = document.getElementById('modal-sell-id').value;
+        const sellPrice = parseInt(document.getElementById('modal-sell-price').value) || 0;
+        const sellDate = document.getElementById('modal-sell-date').value || today;
         
-        const btnDeleteLog = e.target.closest('.btn-delete-log');
-        if (btnDeleteLog) {
-            const id = btnDeleteLog.getAttribute('data-id');
-            const type = btnDeleteLog.getAttribute('data-type');
-            if(confirm('この経費・ログを削除しますか？')) {
-                if(type === 'cash') appState.cashLogs = appState.cashLogs.filter(L => String(L.id) !== String(id));
-                if(type === 'psa') appState.psaLogs = appState.psaLogs.filter(L => String(L.id) !== String(id));
+        if (sellPrice > 0) {
+            const card = appState.cards.find(c => String(c.id) === String(id));
+            if(card) {
+                card.sell = sellPrice;
+                card.sellDate = sellDate;
+                document.getElementById('modal-sell').style.display = 'none';
+                document.getElementById('modal-sell-price').value = '';
+                ensureDateVisible(sellDate);
                 renderAll();
             }
+        } else {
+            alert('有効な販売額を入力してください。');
         }
     });
 
     // CSV Exports
-    const exportCSV = (filename, headers, rows) => {
-        if(rows.length === 0) { alert('エクスポートするデータがありません。'); return; }
-        const csvContent = "\uFEFF" + headers.join(",") + "\n" + rows.map(r => r.join(",")).join("\n");
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a");
-        link.setAttribute("href", URL.createObjectURL(blob));
-        link.setAttribute("download", `${filename}_${new Date().getTime()}.csv`);
-        link.click();
-    };
+    document.getElementById('btn-export-inv').addEventListener('click', () => {
+        const data = filterByActiveTab(appState.cards.filter(c => c.sell === 0), 'date');
+        exportCSV('inventory', ['仕入日','カード名','支払方法','仕入額','PSA'], 
+            data.map(c => [
+                c.date, `"${(c.name||'').replace(/"/g, '""')}"`,
+                c.paymentMethod === 'credit' ? 'クレジット' : '現金',
+                c.buy, c.isPsa ? '有' : '無'
+            ])
+        );
+    });
 
-    document.getElementById('btn-export-csv').addEventListener('click', () => {
-        const data = filterByActiveTab(appState.cards, 'date');
-        exportCSV('cards', ['仕入日','カード名','支払方法','仕入額','PSA','販売額','粗利益','利益率'], 
+    document.getElementById('btn-export-sales').addEventListener('click', () => {
+        const data = filterByActiveTab(appState.cards.filter(c => c.sell > 0), 'sellDate');
+        exportCSV('sales_log', ['販売日','仕入日','カード名','支払方法','仕入額','PSA','販売額','粗利益','利益率'], 
             data.map(c => {
-                const profit = c.sell === 0 ? 0 : (c.sell - c.buy);
-                const margin = c.sell > 0 ? ((profit / c.sell) * 100).toFixed(1) + '%' : '';
+                const profit = c.sell - c.buy;
+                const margin = ((profit / c.sell) * 100).toFixed(1) + '%';
                 return [
-                    c.date, `"${(c.name||'').replace(/"/g, '""')}"`,
+                    c.sellDate, c.date, `"${(c.name||'').replace(/"/g, '""')}"`,
                     c.paymentMethod === 'credit' ? 'クレジット' : '現金',
-                    c.buy, c.isPsa ? '有' : '無', c.sell,
-                    c.sell === 0 ? '' : profit, margin
+                    c.buy, c.isPsa ? '有' : '無', c.sell, profit, margin
                 ];
             })
         );
@@ -632,20 +771,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById('btn-export-cash').addEventListener('click', () => {
         const data = filterByActiveTab(appState.cashLogs, 'date');
-        exportCSV('cash_logs', ['日付','入金額','メモ'], 
-            data.map(L => [
-                L.date, L.amount, `"${(L.memo || '').replace(/"/g, '""')}"`
-            ])
-        );
+        exportCSV('cash_logs', ['日付','入金額','メモ'], data.map(L => [L.date, L.amount, `"${(L.memo||'').replace(/"/g, '""')}"`]));
     });
 
     document.getElementById('btn-export-psa').addEventListener('click', () => {
         const data = filterByActiveTab(appState.psaLogs, 'date');
-        exportCSV('psa_logs', ['日付','鑑定料','送料','経費計','メモ'], 
-            data.map(L => [
-                L.date, L.appraisal || 0, L.shipping || 0, (L.appraisal || 0) + (L.shipping || 0), `"${(L.memo || '').replace(/"/g, '""')}"`
-            ])
-        );
+        exportCSV('psa_logs', ['日付','鑑定料','送料','経費計','メモ'], data.map(L => [L.date, L.appraisal||0, L.shipping||0, (L.appraisal||0)+(L.shipping||0), `"${(L.memo||'').replace(/"/g, '""')}"`]));
     });
 
     renderAll();
