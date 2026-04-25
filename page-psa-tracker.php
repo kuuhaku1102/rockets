@@ -33,15 +33,37 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                         <span style="color: #64748b; font-size: 0.9rem; font-weight: bold;"><i class="fas fa-wallet" style="color: #10b981;"></i> 出納帳・現金機能</span>
                     </div>
                     <div style="display: flex; gap: 20px; align-items: flex-end;">
-                        <div style="flex: 1;">
-                            <label style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 5px;">現金の追加</label>
-                            <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-                                <input type="date" id="ipt-cash-date" class="light-input" style="flex: 1; font-size: 0.8rem; padding: 5px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px;">
-                                <input type="number" id="ipt-add-cash" class="light-input" placeholder="金額(円)" style="flex: 1; font-size: 0.8rem; padding: 5px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px;">
-                                <input type="text" id="ipt-cash-memo" class="light-input" placeholder="メモ(任意)" style="flex: 1.5; font-size: 0.8rem; padding: 5px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px;">
-                                <button id="btn-add-cash" style="background: #10b981; color: white; border: none; padding: 5px 12px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'"><i class="fas fa-plus"></i></button>
+                        <div style="flex: 1; min-width: 250px; background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                            <label style="display: block; font-size: 0.9rem; color: #1e293b; font-weight: bold; margin-bottom: 10px;">資本金など現金の追加</label>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px;">
+                                <!-- Date & Amount row -->
+                                <div style="display: flex; gap: 10px;">
+                                    <div style="flex: 1;">
+                                        <label style="font-size: 0.7rem; color: #64748b; display: block; margin-bottom: 2px;">入金日付</label>
+                                        <input type="date" id="ipt-cash-date" class="light-input" style="padding: 6px;">
+                                    </div>
+                                    <div style="flex: 2;">
+                                        <label style="font-size: 0.7rem; color: #64748b; display: block; margin-bottom: 2px;">追加金額 (円)</label>
+                                        <input type="number" id="ipt-add-cash" class="light-input" placeholder="例: 100000" style="padding: 6px; font-weight: bold;">
+                                    </div>
+                                </div>
+                                
+                                <!-- Memo & Button row -->
+                                <div style="display: flex; gap: 10px; align-items: flex-end;">
+                                    <div style="flex: 1;">
+                                        <label style="font-size: 0.7rem; color: #64748b; display: block; margin-bottom: 2px;">メモ内容 (任意)</label>
+                                        <input type="text" id="ipt-cash-memo" class="light-input" placeholder="理由や入金元など" style="padding: 6px;">
+                                    </div>
+                                    <button id="btn-add-cash" style="background: #10b981; color: white; border: none; padding: 7px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+                                        <i class="fas fa-plus"></i> 追加する
+                                    </button>
+                                </div>
                             </div>
-                            <div style="margin-top: 5px; font-size: 0.75rem; color: #64748b;">入金総累計: <span id="display-total-deposits" style="font-family: 'Share Tech Mono', monospace; font-weight: bold;">¥0</span></div>
+                            
+                            <div style="font-size: 0.8rem; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
+                                現金入金総累計: <span id="display-total-deposits" style="font-family: 'Share Tech Mono', monospace; font-weight: bold; color: #1e293b;">¥0</span>
+                            </div>
                         </div>
                         <div style="flex: 1;">
                             <label style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 5px;">現在の現金残高</label>
