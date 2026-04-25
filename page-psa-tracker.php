@@ -34,10 +34,12 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                     </div>
                     <div style="display: flex; gap: 20px; align-items: flex-end;">
                         <div style="flex: 1;">
-                            <label style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 5px;">現金を追加 (円)</label>
-                            <div style="display: flex; gap: 5px;">
-                                <input type="number" id="ipt-add-cash" class="light-input" placeholder="100000" style="flex: 1; font-size: 1rem; padding: 5px 10px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px;">
-                                <button id="btn-add-cash" style="background: #10b981; color: white; border: none; padding: 5px 15px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'"><i class="fas fa-plus"></i> 追加</button>
+                            <label style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 5px;">現金の追加</label>
+                            <div style="display: flex; gap: 5px; margin-bottom: 5px;">
+                                <input type="date" id="ipt-cash-date" class="light-input" style="flex: 1; font-size: 0.8rem; padding: 5px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px;">
+                                <input type="number" id="ipt-add-cash" class="light-input" placeholder="金額(円)" style="flex: 1; font-size: 0.8rem; padding: 5px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px;">
+                                <input type="text" id="ipt-cash-memo" class="light-input" placeholder="メモ(任意)" style="flex: 1.5; font-size: 0.8rem; padding: 5px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px;">
+                                <button id="btn-add-cash" style="background: #10b981; color: white; border: none; padding: 5px 12px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'"><i class="fas fa-plus"></i></button>
                             </div>
                             <div style="margin-top: 5px; font-size: 0.75rem; color: #64748b;">入金総累計: <span id="display-total-deposits" style="font-family: 'Share Tech Mono', monospace; font-weight: bold;">¥0</span></div>
                         </div>
@@ -175,6 +177,31 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                 </div>
             </div>
 
+            <!-- Cash Logs Area -->
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; max-width: 1200px; margin: 30px auto 0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: left;">
+                <h3 style="color: #1e293b; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; font-weight: bold;">
+                    <i class="fas fa-history" style="color:#10b981; margin-right:5px;"></i> 現金入出金履歴ログ
+                </h3>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; min-width: 600px; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                                <th class="ths" style="width:120px;">日付</th>
+                                <th class="ths text-right" style="width:120px;">入金額</th>
+                                <th class="ths" style="padding-left: 20px;">メモ内容</th>
+                                <th class="ths text-center" style="width: 50px;">-</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cash-log-tbody">
+                            <!-- JS will populate -->
+                        </tbody>
+                    </table>
+                    <div id="cash-empty-state" style="padding: 20px; text-align: center; color: #94a3b8; display:none;">
+                        入金履歴がありません。
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -282,7 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
     iptDate.value = today;
 
     // --- State ---
-    let appState = { deposits: 0, cards: [] };
+    let appState = { deposits: 0, cards: [], cashLogs: [] };
     let currentFilter = { start: null, end: null };
     
     // Load data from WP DB 
@@ -441,6 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
         elTotalDeposits.innerText = '¥' + formatJPY(appState.deposits || 0);
 
         saveToServer();
+        renderCashLogs();
     };
 
     // Add Card Form Submit
@@ -481,6 +509,88 @@ document.addEventListener("DOMContentLoaded", () => {
             const id = btn.getAttribute('data-id');
             if(confirm('このデータを削除しますか？')) {
                 appState.cards = appState.cards.filter(c => String(c.id) !== String(id));
+                renderTable();
+            }
+        }
+    });
+
+    // ==========================================
+    // Cash Addition & Logging Logic
+    // ==========================================
+    const iptCashDate = document.getElementById('ipt-cash-date');
+    iptCashDate.value = today;
+
+    // Legacy migration for old deposit format without logs
+    if (!appState.cashLogs) appState.cashLogs = [];
+    if (appState.cashLogs.length === 0 && appState.deposits > 0) {
+        appState.cashLogs.push({
+            id: 'legacy-' + Date.now(),
+            date: today,
+            amount: appState.deposits,
+            memo: '過去の手動入力からの移行分'
+        });
+    }
+
+    const renderCashLogs = () => {
+        const cTbody = document.getElementById('cash-log-tbody');
+        const cEmpty = document.getElementById('cash-empty-state');
+        cTbody.innerHTML = '';
+        
+        let calculatedDeposits = 0;
+        
+        if (appState.cashLogs.length === 0) cEmpty.style.display = 'block';
+        else cEmpty.style.display = 'none';
+
+        [...appState.cashLogs].sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(log => {
+            calculatedDeposits += log.amount;
+            const tr = document.createElement('tr');
+            tr.className = 'tracker-row';
+            tr.innerHTML = `
+                <td style="color: #64748b;">${log.date}</td>
+                <td class="text-right" style="font-family: 'Share Tech Mono', monospace; font-weight: bold; color: ${log.amount < 0 ? '#ef4444' : '#1e293b'};">
+                    ${log.amount >= 0 ? '+' : ''}${formatJPY(log.amount)}
+                </td>
+                <td style="padding-left: 20px; color: #334155;">${log.memo || '-'}</td>
+                <td class="text-center">
+                    <button class="btn-delete-log" data-id="${log.id}" title="削除"><i class="fas fa-trash" style="color: #cbd5e1;"></i></button>
+                </td>
+            `;
+            cTbody.appendChild(tr);
+        });
+
+        // Update single truth
+        appState.deposits = calculatedDeposits;
+        
+        const elTotalDeposits = document.getElementById('display-total-deposits');
+        if(elTotalDeposits) elTotalDeposits.innerText = '¥' + formatJPY(appState.deposits);
+    };
+
+    // Add Cash Log
+    document.getElementById('btn-add-cash').addEventListener('click', () => {
+        const amount = parseInt(document.getElementById('ipt-add-cash').value) || 0;
+        const cDate = iptCashDate.value || today;
+        const cMemo = document.getElementById('ipt-cash-memo').value;
+
+        if (amount !== 0) {
+            appState.cashLogs.push({
+                id: Date.now().toString(),
+                date: cDate,
+                amount: amount,
+                memo: cMemo
+            });
+            document.getElementById('ipt-add-cash').value = '';
+            document.getElementById('ipt-cash-memo').value = '';
+            renderTable(); // renderTable will call saveToServer and we also call renderCashLogs inside it
+        }
+    });
+
+    // Delete Cash Log
+    document.getElementById('cash-log-tbody').addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-delete-log');
+        if (btn) {
+            const id = btn.getAttribute('data-id');
+            if(confirm('この入出金履歴を削除しますか？')) {
+                appState.cashLogs = appState.cashLogs.filter(L => String(L.id) !== String(id));
                 renderTable();
             }
         }
