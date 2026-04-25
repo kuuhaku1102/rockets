@@ -119,78 +119,8 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                 </div>
             </div>
 
-            <!-- Inventory (Unsold) Area -->
-            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; max-width: 1200px; margin: 0 auto 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
-                            <i class="fas fa-box" style="color:#3b82f6;"></i> 現状のカード在庫一覧
-                        </h3>
-                        <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
-                    </div>
-                    <button id="btn-export-inv" style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold;">
-                        <i class="fas fa-file-excel"></i> 出力
-                    </button>
-                </div>
-
-                <div style="overflow-x: auto; text-align: left;">
-                    <table style="width: 100%; border-collapse: collapse; min-width: 600px; font-size: 0.85rem;">
-                        <thead>
-                            <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
-                                <th class="ths">仕入日</th>
-                                <th class="ths">カード名</th>
-                                <th class="ths text-center">支払</th>
-                                <th class="ths text-right">仕入額</th>
-                                <th class="ths text-center">PSA</th>
-                                <th class="ths text-center" style="width: 80px;">アクション</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inventory-tbody"></tbody>
-                    </table>
-                    <div id="inv-empty-state" style="padding: 20px; text-align: center; color: #94a3b8; display:none;">
-                        該当する在庫データがありません。
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sales (Sold) Area -->
-            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; max-width: 1200px; margin: 0 auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
-                            <i class="fas fa-handshake" style="color:#8b5cf6;"></i> カード販売済み履歴
-                        </h3>
-                        <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
-                    </div>
-                    <button id="btn-export-sales" style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold;">
-                        <i class="fas fa-file-excel"></i> 出力
-                    </button>
-                </div>
-
-                <div style="overflow-x: auto; text-align: left;">
-                    <table style="width: 100%; border-collapse: collapse; min-width: 800px; font-size: 0.85rem;">
-                        <thead>
-                            <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
-                                <th class="ths" style="color:#8b5cf6;">販売日</th>
-                                <th class="ths">仕入日</th>
-                                <th class="ths">カード名</th>
-                                <th class="ths text-right">仕入額</th>
-                                <th class="ths text-right" style="background: #f3e8ff;">販売額</th>
-                                <th class="ths text-right">粗利益</th>
-                                <th class="ths text-right">利益率</th>
-                                <th class="ths text-center" style="width: 80px;">取消・削除</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sales-tbody"></tbody>
-                    </table>
-                    <div id="sales-empty-state" style="padding: 20px; text-align: center; color: #94a3b8; display:none;">
-                        該当する販売データがありません。
-                    </div>
-                </div>
-            </div>
-
-            <!-- Two Column Layout for Logs -->
-            <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 20px auto 0; max-width: 1200px;">
+            <!-- 1. Two Column Layout for Logs -->
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 0 auto 20px; max-width: 1200px;">
 
                 <!-- Cash Logs Area -->
                 <div style="flex: 1; min-width: 350px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: left;">
@@ -276,6 +206,77 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                 </div>
 
             </div>
+
+            <!-- 2. Sales (Sold) Area -->
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; max-width: 1200px; margin: 0 auto 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
+                            <i class="fas fa-handshake" style="color:#8b5cf6;"></i> カード販売済み履歴
+                        </h3>
+                        <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
+                    </div>
+                    <button id="btn-export-sales" style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold;">
+                        <i class="fas fa-file-excel"></i> 出力
+                    </button>
+                </div>
+
+                <div style="overflow-x: auto; text-align: left;">
+                    <table style="width: 100%; border-collapse: collapse; min-width: 800px; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                                <th class="ths" style="color:#8b5cf6;">販売日</th>
+                                <th class="ths">仕入日</th>
+                                <th class="ths">カード名</th>
+                                <th class="ths text-right">仕入額</th>
+                                <th class="ths text-right" style="background: #f3e8ff;">販売額</th>
+                                <th class="ths text-right">粗利益</th>
+                                <th class="ths text-right">利益率</th>
+                                <th class="ths text-center" style="width: 80px;">取消・削除</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-tbody"></tbody>
+                    </table>
+                    <div id="sales-empty-state" style="padding: 20px; text-align: center; color: #94a3b8; display:none;">
+                        該当する販売データがありません。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Inventory (Unsold) Area -->
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; max-width: 1200px; margin: 0 auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
+                            <i class="fas fa-box" style="color:#3b82f6;"></i> 現状のカード在庫一覧
+                        </h3>
+                        <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
+                    </div>
+                    <button id="btn-export-inv" style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold;">
+                        <i class="fas fa-file-excel"></i> 出力
+                    </button>
+                </div>
+
+                <div style="overflow-x: auto; text-align: left;">
+                    <table style="width: 100%; border-collapse: collapse; min-width: 600px; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                                <th class="ths">仕入日</th>
+                                <th class="ths">カード名</th>
+                                <th class="ths text-center">支払</th>
+                                <th class="ths text-right">仕入額</th>
+                                <th class="ths text-center">PSA</th>
+                                <th class="ths text-center" style="width: 80px;">アクション</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-tbody"></tbody>
+                    </table>
+                    <div id="inv-empty-state" style="padding: 20px; text-align: center; color: #94a3b8; display:none;">
+                        該当する在庫データがありません。
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 </main>
@@ -492,7 +493,6 @@ document.addEventListener("DOMContentLoaded", () => {
             appState.cards.forEach(c => { tabBuy += c.buy; tabSell += c.sell; });
             appState.psaLogs.forEach(l => tabPsaCost += ((l.appraisal || 0) + (l.shipping || 0)));
         } else {
-            // For P&L in the current month: 
             // Buy cost is realized at Purchase Date
             appState.cards.filter(c => {
                 const d = new Date(c.date);
