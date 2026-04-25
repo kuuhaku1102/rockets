@@ -401,15 +401,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 500);
     };
 
-    // Cash Addition Logic
-    document.getElementById('btn-add-cash').addEventListener('click', () => {
-        const amount = parseInt(document.getElementById('ipt-add-cash').value) || 0;
-        if (amount !== 0) {
-            appState.deposits = (appState.deposits || 0) + amount;
-            document.getElementById('ipt-add-cash').value = '';
-            renderTable();
-        }
-    });
 
     // Render Table
     const renderTable = () => {
