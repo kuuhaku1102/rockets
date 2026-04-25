@@ -34,8 +34,12 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                     </div>
                     <div style="display: flex; gap: 20px; align-items: flex-end;">
                         <div style="flex: 1;">
-                            <label style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 5px;">資本金・入金総額 (円)</label>
-                            <input type="number" id="ipt-deposits" class="light-input" style="width: 100%; font-size: 1.2rem; font-weight: bold; padding: 5px 10px; border: 1px dashed #cbd5e1; background: #f1f5f9; border-radius: 4px;">
+                            <label style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 5px;">現金を追加 (円)</label>
+                            <div style="display: flex; gap: 5px;">
+                                <input type="number" id="ipt-add-cash" class="light-input" placeholder="100000" style="flex: 1; font-size: 1rem; padding: 5px 10px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px;">
+                                <button id="btn-add-cash" style="background: #10b981; color: white; border: none; padding: 5px 15px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'"><i class="fas fa-plus"></i> 追加</button>
+                            </div>
+                            <div style="margin-top: 5px; font-size: 0.75rem; color: #64748b;">入金総累計: <span id="display-total-deposits" style="font-family: 'Share Tech Mono', monospace; font-weight: bold;">¥0</span></div>
                         </div>
                         <div style="flex: 1;">
                             <label style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 5px;">現在の現金残高</label>
@@ -269,7 +273,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const psaDetails = document.querySelectorAll('.psa-details');
     const tbody = document.getElementById('tracker-tbody');
     const emptyState = document.getElementById('empty-state');
-    const iptDeposits = document.getElementById('ipt-deposits');
     
     const filterStart = document.getElementById('filter-start');
     const filterEnd = document.getElementById('filter-end');
@@ -319,8 +322,6 @@ document.addEventListener("DOMContentLoaded", () => {
         sell: c.sell || 0
     }));
 
-    iptDeposits.value = appState.deposits || 0;
-
     // Toggle PSA inputs
     iptPsaCheck.addEventListener('change', (e) => {
         psaDetails.forEach(el => {
@@ -351,10 +352,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 500);
     };
 
-    iptDeposits.addEventListener('input', (e) => {
-        appState.deposits = parseInt(e.target.value) || 0;
-        renderTable(); // Re-render to update cash
-        saveToServer();
+    // Cash Addition Logic
+    document.getElementById('btn-add-cash').addEventListener('click', () => {
+        const amount = parseInt(document.getElementById('ipt-add-cash').value) || 0;
+        if (amount !== 0) {
+            appState.deposits = (appState.deposits || 0) + amount;
+            document.getElementById('ipt-add-cash').value = '';
+            renderTable();
+        }
     });
 
     // Render Table
@@ -431,6 +436,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const elCash = document.getElementById('current-cash');
         elCash.innerText = '¥' + formatJPY(currentCash);
         elCash.style.color = currentCash >= 0 ? '#10b981' : '#ef4444';
+
+        const elTotalDeposits = document.getElementById('display-total-deposits');
+        elTotalDeposits.innerText = '¥' + formatJPY(appState.deposits || 0);
 
         saveToServer();
     };
