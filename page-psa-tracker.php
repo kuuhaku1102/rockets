@@ -216,9 +216,15 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                         </h3>
                         <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
                     </div>
-                    <button id="btn-export-sales" style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold;">
-                        <i class="fas fa-file-excel"></i> 出力
-                    </button>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <div style="position: relative;">
+                            <i class="fas fa-search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.8rem;"></i>
+                            <input type="text" id="search-sales" class="light-input" placeholder="カード名で絞り込み..." style="width:180px; padding: 4px 10px 4px 30px; font-size:0.8rem; border-color:#cbd5e1;">
+                        </div>
+                        <button id="btn-export-sales" style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold;">
+                            <i class="fas fa-file-excel"></i> 出力
+                        </button>
+                    </div>
                 </div>
 
                 <div style="overflow-x: auto; text-align: left;">
@@ -252,9 +258,15 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                         </h3>
                         <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
                     </div>
-                    <button id="btn-export-inv" style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold;">
-                        <i class="fas fa-file-excel"></i> 出力
-                    </button>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <div style="position: relative;">
+                            <i class="fas fa-search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.8rem;"></i>
+                            <input type="text" id="search-inv" class="light-input" placeholder="カード名で絞り込み..." style="width:180px; padding: 4px 10px 4px 30px; font-size:0.8rem; border-color:#cbd5e1;">
+                        </div>
+                        <button id="btn-export-inv" style="background: #10b981; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold;">
+                            <i class="fas fa-file-excel"></i> 出力
+                        </button>
+                    </div>
                 </div>
 
                 <div style="overflow-x: auto; text-align: left;">
@@ -466,6 +478,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Main Render
     const renderAll = () => {
         updateHeaderLabels();
+        
+        const searchInvVal = document.getElementById('search-inv').value.trim().toLowerCase();
+        const searchSalesVal = document.getElementById('search-sales').value.trim().toLowerCase();
 
         // 1. Split Cards into Unsold (Inventory) and Sold (Sales)
         const unsoldCards = appState.cards.filter(c => c.sell === 0);
@@ -520,12 +535,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         // --- RENDER INVENTORY TABLE ---
+        const tableFilteredInv = filteredInv.filter(c => !searchInvVal || (c.name || '').toLowerCase().includes(searchInvVal));
         const invTbody = document.getElementById('inventory-tbody');
         invTbody.innerHTML = '';
-        if(filteredInv.length === 0) document.getElementById('inv-empty-state').style.display='block';
+        if(tableFilteredInv.length === 0) document.getElementById('inv-empty-state').style.display='block';
         else document.getElementById('inv-empty-state').style.display='none';
 
-        filteredInv.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(item => {
+        tableFilteredInv.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(item => {
             const payBadge = item.paymentMethod === 'credit' ? '<span class="badge-pay badge-credit">💳</span>' : '<span class="badge-pay badge-cash">💵</span>';
             const tr = document.createElement('tr');
             tr.className = 'tracker-row';
@@ -544,12 +560,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // --- RENDER SALES LOG TABLE ---
+        const tableFilteredSales = filteredSales.filter(c => !searchSalesVal || (c.name || '').toLowerCase().includes(searchSalesVal));
         const salesTbody = document.getElementById('sales-tbody');
         salesTbody.innerHTML = '';
-        if(filteredSales.length === 0) document.getElementById('sales-empty-state').style.display='block';
+        if(tableFilteredSales.length === 0) document.getElementById('sales-empty-state').style.display='block';
         else document.getElementById('sales-empty-state').style.display='none';
 
-        filteredSales.sort((a,b) => new Date(b.sellDate) - new Date(a.sellDate)).forEach(item => {
+        tableFilteredSales.sort((a,b) => new Date(b.sellDate) - new Date(a.sellDate)).forEach(item => {
             const profitNum = item.sell - item.buy;
             const isProfit = profitNum >= 0;
             const profitClass = isProfit ? 'profit-pos' : 'profit-neg';
@@ -621,6 +638,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
     tabYearSelect.addEventListener('change', renderAll);
+    
+    // Search Inputs
+    document.getElementById('search-inv').addEventListener('input', renderAll);
+    document.getElementById('search-sales').addEventListener('input', renderAll);
 
     // Forms
     document.getElementById('tracker-form').addEventListener('submit', (e) => {
