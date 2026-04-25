@@ -16,7 +16,7 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
     <section class="page-header relative z-10" style="padding: 50px 0 20px;">
         <div class="container text-center">
             <h1 style="font-size: 2.2rem; margin-bottom: 5px; color: #1e293b; font-weight: bold; font-family: 'Share Tech Mono', sans-serif;">PSA ROI Tracker<span style="font-size: 1rem; color:#8b5cf6; margin-left:10px;">PRO</span></h1>
-            <p style="color: #64748b; font-size: 0.9rem;">クラウド同期 / 現金出納 / 月別在庫管理機能搭載</p>
+            <p style="color: #64748b; font-size: 0.9rem;">クラウド同期 / 月別表示 / 現金出納・PSA経費管理</p>
         </div>
     </section>
 
@@ -34,22 +34,22 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                     </div>
                     <div id="current-cash" style="font-size: 2.2rem; font-weight: bold; color: #10b981; font-family: 'Share Tech Mono', monospace; margin-bottom: 10px;">¥0</div>
                     <div style="font-size: 0.75rem; color: #94a3b8; line-height: 1.4;">
-                        ※入金総額、現金仕入、PSA経費、販売売上が自動反映されています。
+                        ※全ての入金・現金仕入・PSA経費・販売売上が合算された<br><span style="color:#ef4444;">総合計残高</span>です（月別タブの影響を受けません）。
                     </div>
                 </div>
 
                 <!-- Stats Box -->
                 <div style="flex: 3; display: flex; gap: 15px; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 120px; background: #fff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                        <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 5px;">総仕入額</div>
+                        <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 5px;">総仕入額 <span class="stat-label" style="font-size:0.7rem; background:#f1f5f9; padding:2px 6px; border-radius:10px; margin-left:5px;">全期間</span></div>
                         <div id="total-buy" style="font-size: 1.6rem; font-weight: bold; color: #334155; font-family: 'Share Tech Mono', monospace;">¥0</div>
                     </div>
                     <div style="flex: 1; min-width: 120px; background: #fff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                        <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 5px;">総販売額</div>
+                        <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 5px;">総販売額 <span class="stat-label" style="font-size:0.7rem; background:#f1f5f9; padding:2px 6px; border-radius:10px; margin-left:5px;">全期間</span></div>
                         <div id="total-sell" style="font-size: 1.6rem; font-weight: bold; color: #334155; font-family: 'Share Tech Mono', monospace;">¥0</div>
                     </div>
                     <div style="flex: 1; min-width: 120px; background: #fff; border: 1px solid #8b5cf6; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(139,92,246,0.1);">
-                        <div style="color: #8b5cf6; font-size: 0.8rem; margin-bottom: 5px; font-weight: bold;">純利益 (予測含む)</div>
+                        <div style="color: #8b5cf6; font-size: 0.8rem; margin-bottom: 5px; font-weight: bold;">純利益 (予測含) <span class="stat-label" style="font-size:0.7rem; background:#ede9fe; padding:2px 6px; border-radius:10px; margin-left:5px;">全期間</span></div>
                         <div id="total-profit" style="font-size: 1.8rem; font-weight: bold; color: #334155; font-family: 'Share Tech Mono', monospace;">¥0</div>
                     </div>
                 </div>
@@ -95,17 +95,15 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                 </form>
             </div>
 
-            <!-- Table & Tabs Area -->
-            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; max-width: 1200px; margin: 0 auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                
-                <!-- Monthly Tabs -->
-                <div style="display: flex; gap: 5px; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; overflow-x: auto; white-space: nowrap;">
-                    <div style="color: #1e293b; font-weight: bold; margin-right: 10px; font-size: 0.9rem;">
-                        <i class="fas fa-box-open" style="color:#f59e0b; margin-right:5px;"></i> 月別在庫表示
+            <!-- Global Monthly Tabs (Controls all tables below) -->
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px 20px; max-width: 1200px; margin: 0 auto 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <div style="display: flex; gap: 5px; align-items: center; overflow-x: auto; white-space: nowrap;">
+                    <div style="color: #1e293b; font-weight: bold; margin-right: 10px; font-size: 0.95rem;">
+                        <i class="fas fa-calendar-check" style="color:#f59e0b; margin-right:5px;"></i> 月別データ表示
                     </div>
                     <select id="tab-year" class="light-input" style="width: 90px; padding: 4px 8px; border-color:#cbd5e1; font-weight:bold; margin-right:10px; height: 32px;"></select>
                     
-                    <button class="tab-btn active" data-month="all">すべて表示</button>
+                    <button class="tab-btn active" data-month="all">全期間</button>
                     <button class="tab-btn" data-month="1">1月</button>
                     <button class="tab-btn" data-month="2">2月</button>
                     <button class="tab-btn" data-month="3">3月</button>
@@ -119,9 +117,16 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
                     <button class="tab-btn" data-month="11">11月</button>
                     <button class="tab-btn" data-month="12">12月</button>
                 </div>
+            </div>
 
+            <!-- Card Tracker Table Area -->
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; max-width: 1200px; margin: 0 auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <button id="btn-export-csv" style="background: #10b981; color: white; border: none; padding: 7px 15px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: bold;">
+                    <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
+                        <i class="fas fa-box" style="color:#3b82f6; margin-right:5px;"></i> カード在庫一覧 <span class="table-title-suffix" style="font-size:0.8rem; color:#64748b; margin-left:10px;">(全期間)</span>
+                    </h3>
+                    <button id="btn-export-csv" style="background: #10b981; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold;">
                         <i class="fas fa-file-excel"></i> CSV出力
                     </button>
                 </div>
@@ -154,13 +159,16 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
             </div>
 
             <!-- Two Column Layout for Logs -->
-            <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 30px auto 0; max-width: 1200px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 20px auto 0; max-width: 1200px;">
 
                 <!-- Cash Logs Area -->
                 <div style="flex: 1; min-width: 350px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: left;">
-                    <h3 style="color: #1e293b; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; font-weight: bold;">
-                        <i class="fas fa-history" style="color:#10b981; margin-right:5px;"></i> 資金追加ログ (出納帳)
-                    </h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 15px;">
+                        <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
+                            <i class="fas fa-history" style="color:#10b981; margin-right:5px;"></i> 資金追加ログ (出納帳)
+                        </h3>
+                        <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
+                    </div>
                     
                     <div style="background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
                         <div style="display: flex; gap: 10px; margin-bottom: 10px;">
@@ -191,15 +199,18 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
 
                 <!-- PSA Submission Logs Area -->
                 <div style="flex: 1; min-width: 350px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: left;">
-                    <h3 style="color: #1e293b; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; font-weight: bold;">
-                        <i class="fas fa-truck-loading" style="color:#ef4444; margin-right:5px;"></i> PSA鑑定料・送料 経費ログ
-                    </h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 15px;">
+                        <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: bold; margin:0;">
+                            <i class="fas fa-certificate" style="color:#ef4444; margin-right:5px;"></i> PSA鑑定・送料 経費ログ
+                        </h3>
+                        <span class="table-title-suffix" style="font-size:0.75rem; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">全期間</span>
+                    </div>
                     
                     <div style="background: #fff1f2; padding: 15px; border-radius: 6px; border: 1px solid #fecdd3; margin-bottom: 15px;">
                         <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                             <input type="date" id="ipt-psa-date" class="light-input" style="flex: 1; padding: 6px; border-color:#fecdd3;">
                             <input type="number" id="ipt-psa-fee" class="light-input" placeholder="鑑定料(円)" style="flex: 1; padding: 6px; border-color:#fecdd3;">
-                            <input type="number" id="ipt-psa-ship" class="light-input" placeholder="送料等(円)" style="flex: 1; padding: 6px; border-color:#fecdd3;">
+                            <input type="number" id="ipt-psa-ship" class="light-input" placeholder="送料(円)" style="flex: 1; padding: 6px; border-color:#fecdd3;">
                         </div>
                         <div style="display: flex; gap: 10px;">
                             <input type="text" id="ipt-psa-memo" class="light-input" placeholder="第○回PSA提出分 など" style="flex: 1; padding: 6px; border-color:#fecdd3;">
@@ -230,94 +241,45 @@ $db_data_json = get_option('rockets_psa_tracker_data', '{"deposits":0,"cards":[]
 
 <style>
 /* Light Theme CSS Adjustments */
-.form-label {
-    display: block; font-size: 0.75rem; color: #475569; margin-bottom: 5px; font-weight: bold;
-}
+.form-label { display: block; font-size: 0.75rem; color: #475569; margin-bottom: 5px; font-weight: bold; }
 .light-input {
-    width: 100%;
-    background: #fff;
-    border: 1px solid #cbd5e1;
-    padding: 8px 12px;
-    border-radius: 4px;
-    color: #1e293b;
-    font-size: 0.9rem;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    width: 100%; background: #fff; border: 1px solid #cbd5e1; padding: 8px 12px;
+    border-radius: 4px; color: #1e293b; font-size: 0.9rem; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
 }
-.light-input:focus {
-    outline: none;
-    border-color: #8b5cf6;
-    box-shadow: 0 0 0 2px rgba(139,92,246,0.2);
-}
-.ths {
-    padding: 12px 10px; color: #475569; font-weight: bold;
-}
+.light-input:focus { outline: none; border-color: #8b5cf6; box-shadow: 0 0 0 2px rgba(139,92,246,0.2); }
+.ths { padding: 12px 10px; color: #475569; font-weight: bold; }
 .text-right { text-align: right; }
 .text-center { text-align: center; }
 
-.tracker-row {
-    border-bottom: 1px solid #f1f5f9;
-}
-.tracker-row:nth-child(even) {
-    background: #f8fafc;
-}
-.tracker-row:hover {
-    background: #f1f5f9;
-}
-.tracker-row td {
-    padding: 10px;
-    vertical-align: middle;
-    color: #334155;
-}
+.tracker-row { border-bottom: 1px solid #f1f5f9; }
+.tracker-row:nth-child(even) { background: #f8fafc; }
+.tracker-row:hover { background: #f1f5f9; }
+.tracker-row td { padding: 10px; vertical-align: middle; color: #334155; }
+
 .sell-input-field {
-    width: 100px;
-    text-align: right;
-    padding: 4px 8px;
-    background: #fff;
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    color: #1e293b;
-    font-family: 'Share Tech Mono', monospace;
-    font-weight: bold;
+    width: 100px; text-align: right; padding: 4px 8px; background: #fff;
+    border: 1px solid #cbd5e1; border-radius: 4px; color: #1e293b;
+    font-family: 'Share Tech Mono', monospace; font-weight: bold;
 }
-.sell-input-field:focus {
-    border-color: #8b5cf6;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(139,92,246,0.2);
-}
-.btn-delete {
-    background: transparent;
-    color: #cbd5e1;
-    border: none;
-    cursor: pointer;
-    font-size: 0.9rem;
-}
+.sell-input-field:focus { border-color: #8b5cf6; outline: none; box-shadow: 0 0 0 2px rgba(139,92,246,0.2); }
+
+.btn-delete { background: transparent; color: #cbd5e1; border: none; cursor: pointer; font-size: 0.9rem; }
 .btn-delete:hover { color: #ef4444; }
 .profit-pos { color: #10b981; }
 .profit-neg { color: #ef4444; }
-.badge-pay {
-    font-size: 0.7rem; padding: 2px 6px; border-radius: 4px;
-}
+
+.badge-pay { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; }
 .badge-cash { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
 .badge-credit { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; }
 
 /* Tabs */
 .tab-btn {
-    background: transparent;
-    border: 1px solid #cbd5e1;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    color: #64748b;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.2s;
+    background: transparent; border: 1px solid #cbd5e1; padding: 6px 14px;
+    border-radius: 20px; font-size: 0.8rem; color: #64748b; cursor: pointer;
+    font-weight: bold; transition: 0.2s;
 }
 .tab-btn:hover { background: #f1f5f9; }
-.tab-btn.active {
-    background: #1e293b;
-    color: #fff;
-    border-color: #1e293b;
-}
+.tab-btn.active { background: #1e293b; color: #fff; border-color: #1e293b; }
 </style>
 
 <script>
@@ -332,11 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('ipt-psa-date').value = today;
 
     // --- State ---
-    let appState = { 
-        cards: [], 
-        cashLogs: [],
-        psaLogs: []
-    };
+    let appState = { cards: [], cashLogs: [], psaLogs: [] };
     
     // Load data from WP DB 
     const dbDataRaw = <?php echo json_encode($db_data_json); ?>;
@@ -356,36 +314,27 @@ document.addEventListener("DOMContentLoaded", () => {
     // Legacy Data Migrations
     if (appState.deposits > 0 && appState.cashLogs.length === 0) {
         appState.cashLogs.push({ id: 'leg-cash', date: today, amount: appState.deposits, memo: '過去の設定額からの移行分' });
-        appState.deposits = 0; // obsolete field
+        appState.deposits = 0;
     }
 
     appState.cards = appState.cards.map(c => {
         let psaConvertFee = c.psaFee !== undefined ? c.psaFee : (c.fee || 0);
         let shipConvertFee = c.shippingFee || 0;
-        
-        // If legacy card has hidden fees, migrate them to explicit PSALog entries to preserve math!
         if (psaConvertFee > 0 || shipConvertFee > 0) {
             appState.psaLogs.push({
-                id: 'leg-psa-' + c.id,
-                date: c.date || today,
-                appraisal: psaConvertFee,
-                shipping: shipConvertFee,
-                memo: (c.name || '不明なカード') + ' の個別経費(移行分)'
+                id: 'leg-psa-' + c.id, date: c.date || today,
+                appraisal: psaConvertFee, shipping: shipConvertFee,
+                memo: (c.name || '不明なカード') + ' の個別経費(移行)'
             });
         }
-        
         return {
-            id: c.id,
-            date: c.date || today,
-            name: c.name || '',
-            paymentMethod: c.paymentMethod || 'cash',
-            buy: c.buy || 0,
-            isPsa: !!c.isPsa,
-            sell: c.sell || 0
+            id: c.id, date: c.date || today, name: c.name || '',
+            paymentMethod: c.paymentMethod || 'cash', buy: c.buy || 0,
+            isPsa: !!c.isPsa, sell: c.sell || 0
         };
     });
 
-    // Populate Year Tab Options
+    // Year Dropdown
     const currYear = new Date().getFullYear();
     const tabYearSelect = document.getElementById('tab-year');
     for(let y = currYear - 2; y <= currYear + 2; y++) {
@@ -396,10 +345,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let activeTabMonth = 'all';
-
     const formatJPY = (num) => new Intl.NumberFormat('ja-JP').format(num || 0);
 
-    // Save Logic
+    // Filter Function Helper
+    const filterByActiveTab = (arr, dateField) => {
+        if (activeTabMonth === 'all') return [...arr];
+        const selectedYear = parseInt(tabYearSelect.value);
+        return [...arr].filter(item => {
+            const d = new Date(item[dateField]);
+            return d.getFullYear() === selectedYear && (d.getMonth() + 1) === parseInt(activeTabMonth);
+        });
+    };
+
+    // Auto-update Tab Labels based on selection
+    const updateHeaderLabels = () => {
+        const labelStr = activeTabMonth === 'all' ? '全期間' : `${tabYearSelect.value} ${activeTabMonth}月`;
+        document.querySelectorAll('.table-title-suffix').forEach(el => el.innerText = `(${labelStr})`);
+        document.querySelectorAll('.stat-label').forEach(el => el.innerText = labelStr);
+    };
+
+    // Auto-switch Tab Logic when inserting new record
+    const ensureDateVisible = (dateStr) => {
+        if (activeTabMonth === 'all') return;
+        const d = new Date(dateStr);
+        const y = d.getFullYear();
+        const m = d.getMonth() + 1;
+        tabYearSelect.value = y;
+        activeTabMonth = m.toString();
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-month') === activeTabMonth);
+        });
+    };
+
     let saveTimeout = null;
     const saveToServer = () => {
         clearTimeout(saveTimeout);
@@ -407,25 +384,38 @@ document.addEventListener("DOMContentLoaded", () => {
             const formData = new FormData();
             formData.append('action', 'psa_tracker_save');
             formData.append('data', JSON.stringify(appState));
-            fetch(adminAjaxUrl, {
-                method: 'POST',
-                body: formData
-            }).catch(e => console.error("DB Sync failed", e));
+            fetch(adminAjaxUrl, { method: 'POST', body: formData }).catch(e => console.error(e));
         }, 500);
     };
 
     // Render 
     const renderAll = () => {
-        // Cash logs rendering
+        updateHeaderLabels();
+
+        // 1. Calculate GLOBAL Cash Balance (Unaffected by Month Tabs!)
+        let globalDeposits = 0;
+        let globalPsaCosts = 0;
+        appState.cashLogs.forEach(l => globalDeposits += l.amount);
+        appState.psaLogs.forEach(l => globalPsaCosts += (l.appraisal || 0) + (l.shipping || 0));
+        
+        let currentCash = globalDeposits - globalPsaCosts;
+        appState.cards.forEach(c => {
+            if (c.paymentMethod === 'cash') currentCash -= c.buy;
+            if (c.sell > 0) currentCash += c.sell;
+        });
+
+        // 2. Filter Lists based on selected Tab
+        const filteredCards = filterByActiveTab(appState.cards, 'date');
+        const filteredCash = filterByActiveTab(appState.cashLogs, 'date');
+        const filteredPsa = filterByActiveTab(appState.psaLogs, 'date');
+
+        // Render Cash Logs
         const cTbody = document.getElementById('cash-log-tbody');
         cTbody.innerHTML = '';
-        let totalDepositsCalculated = 0;
-        
-        if(appState.cashLogs.length === 0) document.getElementById('cash-empty-state').style.display='block';
+        if(filteredCash.length === 0) document.getElementById('cash-empty-state').style.display='block';
         else document.getElementById('cash-empty-state').style.display='none';
 
-        [...appState.cashLogs].sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(log => {
-            totalDepositsCalculated += log.amount;
+        filteredCash.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(log => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td style="color: #64748b;">${log.date}</td>
@@ -436,59 +426,38 @@ document.addEventListener("DOMContentLoaded", () => {
             cTbody.appendChild(tr);
         });
 
-        // PSA logs rendering
+        // Render PSA Logs
         const pTbody = document.getElementById('psa-log-tbody');
         pTbody.innerHTML = '';
-        let totalPsaCost = 0;
-
-        if(appState.psaLogs.length === 0) document.getElementById('psa-empty-state').style.display='block';
+        let tabPsaCost = 0; // Sum of PSA costs for the visible tab
+        
+        if(filteredPsa.length === 0) document.getElementById('psa-empty-state').style.display='block';
         else document.getElementById('psa-empty-state').style.display='none';
 
-        [...appState.psaLogs].sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(log => {
+        filteredPsa.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(log => {
             const tCost = (log.appraisal || 0) + (log.shipping || 0);
-            totalPsaCost += tCost;
-            const subMemo = `鑑定:¥${formatJPY(log.appraisal)} 送料:¥${formatJPY(log.shipping)}`;
+            tabPsaCost += tCost;
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td style="color: #64748b;">${log.date}</td>
                 <td class="text-right" style="font-weight: bold; color: #ef4444;">-¥${formatJPY(tCost)}</td>
-                <td style="padding-left:10px; color:#64748b; font-size:0.75rem;">${log.memo || '-'}<br><span style="opacity:0.6">${subMemo}</span></td>
+                <td style="padding-left:10px; color:#64748b; font-size:0.75rem;">${log.memo || '-'}<br><span style="opacity:0.6">鑑定:¥${formatJPY(log.appraisal)} 送料:¥${formatJPY(log.shipping)}</span></td>
                 <td class="text-center"><button class="btn-delete-log" data-type="psa" data-id="${log.id}"><i class="fas fa-trash"></i></button></td>
             `;
             pTbody.appendChild(tr);
         });
 
-        // Tracker Table rendering & Core Math
+        // Render Cards Tracker
         const tbody = document.getElementById('tracker-tbody');
         tbody.innerHTML = '';
+        let tabBuy = 0; let tabSell = 0; 
         
-        let totalBuy = 0; let totalSell = 0; 
-        let currentCash = totalDepositsCalculated - totalPsaCost;
-
-        // Apply Tab Filter
-        let filteredCards = [...appState.cards];
-        if (activeTabMonth !== 'all') {
-            const selectedYear = parseInt(tabYearSelect.value);
-            filteredCards = filteredCards.filter(c => {
-                const d = new Date(c.date);
-                return d.getFullYear() === selectedYear && (d.getMonth() + 1) === parseInt(activeTabMonth);
-            });
-        }
-
         if(filteredCards.length === 0) document.getElementById('empty-state').style.display='block';
         else document.getElementById('empty-state').style.display='none';
 
-        // Loop Unfiltered purely for Cash/Profit Global Stats
-        appState.cards.forEach(c => {
-            totalBuy += c.buy;
-            totalSell += c.sell;
-            if (c.paymentMethod === 'cash') currentCash -= c.buy;
-            if (c.sell > 0) currentCash += c.sell;
-        });
-
-        // Draw Filtered Rows
         filteredCards.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach((item) => {
-            
+            tabBuy += item.buy;
+            tabSell += item.sell;
             const profitNum = item.sell === 0 ? 0 : (item.sell - item.buy);
             const isProfit = profitNum >= 0;
             const profitClass = item.sell === 0 ? '' : (isProfit ? 'profit-pos' : 'profit-neg');
@@ -496,7 +465,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const payBadge = item.paymentMethod === 'credit' ? '<span class="badge-pay badge-credit">💳</span>' : '<span class="badge-pay badge-cash">💵</span>';
 
             const tr = document.createElement('tr');
-            tr.className = 'tracker-row';
             tr.innerHTML = `
                 <td style="color: #64748b;">${item.date}</td>
                 <td style="font-weight: bold;">${item.name}</td>
@@ -510,23 +478,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     ${item.sell === 0 ? '-' : (isProfit ? '+' : '') + formatJPY(profitNum)}
                 </td>
                 <td class="text-right ${profitClass}" style="font-family: 'Share Tech Mono', monospace;">${margin}</td>
-                <td class="text-center">
-                    <button class="btn-delete" data-id="${item.id}" title="削除"><i class="fas fa-trash"></i></button>
-                </td>
+                <td class="text-center"><button class="btn-delete" data-id="${item.id}"><i class="fas fa-trash"></i></button></td>
             `;
             tbody.appendChild(tr);
         });
 
-        // Global Summaries
-        const grandProfit = (totalSell > 0) ? (totalSell - totalBuy - totalPsaCost) : 0;
+        // 3. Tab-based Summaries for Dashboard
+        const tabProfit = (tabSell > 0) ? (tabSell - tabBuy - tabPsaCost) : 0;
         
-        document.getElementById('total-buy').innerText = '¥' + formatJPY(totalBuy);
-        document.getElementById('total-sell').innerText = '¥' + formatJPY(totalSell);
+        document.getElementById('total-buy').innerText = '¥' + formatJPY(tabBuy);
+        document.getElementById('total-sell').innerText = '¥' + formatJPY(tabSell);
         
         const elProfit = document.getElementById('total-profit');
-        elProfit.innerText = '¥' + formatJPY(grandProfit);
-        elProfit.style.color = grandProfit >= 0 ? '#8b5cf6' : '#ef4444';
+        elProfit.innerText = '¥' + formatJPY(tabProfit);
+        elProfit.style.color = tabProfit >= 0 ? '#8b5cf6' : '#ef4444';
 
+        // Current Cash is ALWAYS global
         const elCash = document.getElementById('current-cash');
         elCash.innerText = '¥' + formatJPY(currentCash);
         elCash.style.color = currentCash >= 0 ? '#10b981' : '#ef4444';
@@ -534,7 +501,7 @@ document.addEventListener("DOMContentLoaded", () => {
         saveToServer();
     };
 
-    // Tab Logic
+    // Tab Interface Logic
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -545,12 +512,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     tabYearSelect.addEventListener('change', renderAll);
 
-    // Form Submits
+    // form submissions
     document.getElementById('tracker-form').addEventListener('submit', (e) => {
         e.preventDefault();
+        const d = document.getElementById('ipt-date').value;
         appState.cards.push({
             id: Date.now().toString(),
-            date: document.getElementById('ipt-date').value,
+            date: d,
             name: document.getElementById('ipt-name').value,
             paymentMethod: document.getElementById('ipt-payment').value,
             buy: parseInt(document.getElementById('ipt-buy').value) || 0,
@@ -559,20 +527,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         document.getElementById('ipt-name').value = '';
         document.getElementById('ipt-buy').value = '';
+        ensureDateVisible(d);
         renderAll();
     });
 
     document.getElementById('btn-add-cash').addEventListener('click', () => {
         const amount = parseInt(document.getElementById('ipt-add-cash').value) || 0;
+        const d = document.getElementById('ipt-cash-date').value || today;
         if (amount !== 0) {
             appState.cashLogs.push({
-                id: Date.now().toString(),
-                date: document.getElementById('ipt-cash-date').value || today,
-                amount: amount,
-                memo: document.getElementById('ipt-cash-memo').value
+                id: Date.now().toString(), date: d, amount: amount, memo: document.getElementById('ipt-cash-memo').value
             });
             document.getElementById('ipt-add-cash').value = '';
             document.getElementById('ipt-cash-memo').value = '';
+            ensureDateVisible(d);
             renderAll();
         }
     });
@@ -580,22 +548,22 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('btn-add-psalog').addEventListener('click', () => {
         const appraisal = parseInt(document.getElementById('ipt-psa-fee').value) || 0;
         const shipping = parseInt(document.getElementById('ipt-psa-ship').value) || 0;
+        const d = document.getElementById('ipt-psa-date').value || today;
+        
         if (appraisal > 0 || shipping > 0) {
             appState.psaLogs.push({
-                id: Date.now().toString(),
-                date: document.getElementById('ipt-psa-date').value || today,
-                appraisal: appraisal,
-                shipping: shipping,
-                memo: document.getElementById('ipt-psa-memo').value
+                id: Date.now().toString(), date: d,
+                appraisal: appraisal, shipping: shipping, memo: document.getElementById('ipt-psa-memo').value
             });
             document.getElementById('ipt-psa-fee').value = '';
             document.getElementById('ipt-psa-ship').value = '';
             document.getElementById('ipt-psa-memo').value = '';
+            ensureDateVisible(d);
             renderAll();
         }
     });
 
-    // Delegated events for deletion and inline edits
+    // Delegated UI actions
     document.body.addEventListener('change', (e) => {
         if (e.target.classList.contains('sell-input-field')) {
             const id = e.target.getAttribute('data-id');
@@ -607,9 +575,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener('click', (e) => {
         const btnDeleteCard = e.target.closest('.btn-delete');
         if (btnDeleteCard) {
-            const id = btnDeleteCard.getAttribute('data-id');
             if(confirm('このデータを削除しますか？')) {
-                appState.cards = appState.cards.filter(c => String(c.id) !== String(id));
+                appState.cards = appState.cards.filter(c => String(c.id) !== String(btnDeleteCard.getAttribute('data-id')));
                 renderAll();
             }
         }
@@ -626,7 +593,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // CSV Download
+    // CSV
     document.getElementById('btn-export-csv').addEventListener('click', () => {
         if(appState.cards.length === 0) { alert('データがありません。'); return; }
         let csvContent = "\uFEFF仕入日,カード名,支払方法,仕入額,PSA,販売額,粗利益,利益率\n";
